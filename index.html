@@ -10,6 +10,70 @@
 <link rel="icon" href="./icon-192.png">
 <link rel="apple-touch-icon" href="./icon-192.png">
 <style>html,body{margin:0;padding:0;background:#F3EDDF}</style>
+<script>
+/* v1.1: 인앱브라우저 자동 탈출 — 카카오톡·라인·네이버(안드로이드) 스킴/파라미터 이동.
+   네트워크 요청이 아니라 앱 전환 스킴이며, 해당 인앱 환경에서만 작동(오프라인 요건 예외 승인분). */
+(function () {
+  var ua = navigator.userAgent || "";
+  var kakao = /KAKAOTALK/i.test(ua);
+  var line = /\bLine\//i.test(ua);
+  var naver = /NAVER\(inapp|inapp; search/i.test(ua);
+  var etc = /FBAN|FBAV|Instagram|DaumApps/i.test(ua);
+  function escapeUrl() {
+    var here = location.href.split("#")[0];
+    if (kakao) return "kakaotalk://web/openExternal?url=" + encodeURIComponent(here);
+    if (line) {
+      if (/[?&]openExternalBrowser=1/.test(here)) return null; // 이미 시도됨 — 재추가 방지
+      return here + (here.indexOf("?") > -1 ? "&" : "?") + "openExternalBrowser=1";
+    }
+    if (naver && /Android/i.test(ua)) return "intent://" + location.host + location.pathname + location.search + "#Intent;scheme=https;package=com.android.chrome;end";
+    return null;
+  }
+  function goOut() {
+    var u = escapeUrl();
+    if (!u) { showBanner(); return; }
+    if (line) location.replace(u);
+    else location.href = u;
+  }
+  function copyAddr() {
+    var here = location.href.split("#")[0].split("?")[0];
+    try {
+      var ta = document.createElement("textarea");
+      ta.value = here; document.body.appendChild(ta); ta.select();
+      document.execCommand("copy"); document.body.removeChild(ta);
+      var t = document.getElementById("inapp-copy"); if (t) t.textContent = "복사됨!";
+    } catch (e) {}
+  }
+  function showBanner() {
+    if (document.getElementById("inapp-banner")) return;
+    var make = function () {
+      if (document.getElementById("inapp-banner")) return;
+      var b = document.createElement("div");
+      b.id = "inapp-banner";
+      b.style.cssText = "position:fixed;top:0;left:0;right:0;z-index:9999;background:#26221C;color:#F3EDDF;padding:14px 14px 16px;box-shadow:0 2px 10px rgba(0,0,0,.35);font-family:sans-serif";
+      b.innerHTML = '<div id="inapp-msg" style="font-size:13px;line-height:1.6;margin-bottom:10px">지금은 앱 속 브라우저라 저장·설치가 제한될 수 있어요.<br>기본 브라우저로 열면 모든 기능을 쓸 수 있습니다.</div>' +
+        '<button id="inapp-open" style="width:100%;height:48px;background:#B8352B;color:#fff;border:none;border-radius:6px;font-size:16px;font-weight:700">크롬(기본 브라우저)으로 열기</button>' +
+        '<div style="display:flex;gap:8px;margin-top:8px"><button id="inapp-copy" style="flex:1;height:38px;background:transparent;color:#F3EDDF;border:1px solid #8A6F4D;border-radius:6px;font-size:13px">주소 복사</button>' +
+        '<button id="inapp-close" style="width:38px;height:38px;background:transparent;color:#F3EDDF;border:1px solid #8A6F4D;border-radius:6px;font-size:15px">×</button></div>';
+      document.body.appendChild(b);
+      if (!escapeUrl()) { // 자동 탈출 스킴이 없는 환경(페북·인스타·네이버 iOS 등): 복사 안내로 전환
+        b.querySelector("#inapp-open").style.display = "none";
+        b.querySelector("#inapp-msg").innerHTML = "이 앱 안에서는 자동으로 열 수 없어요.<br>아래 <b>주소 복사</b>를 누른 뒤, 크롬이나 사파리 주소창에 붙여넣어 주세요.";
+      }
+      document.getElementById("inapp-open").onclick = goOut;
+      document.getElementById("inapp-copy").onclick = copyAddr;
+      document.getElementById("inapp-close").onclick = function () { b.remove(); };
+    };
+    if (document.body) make();
+    else document.addEventListener("DOMContentLoaded", make);
+  }
+  window.__inappTest = { escapeUrl: escapeUrl, showBanner: showBanner, detected: { kakao: kakao, line: line, naver: naver, etc: etc } };
+  if (!(kakao || line || naver || etc)) return; // 일반 브라우저: 아무것도 하지 않음
+  if (line && /[?&]openExternalBrowser=1/.test(location.search)) { showBanner(); return; } // 라인 재귀 방지
+  goOut();
+  setTimeout(function () { if (!document.hidden) showBanner(); }, 1200); // 1.2초 내 탈출 실패 시 폴백
+})();
+</script>
 </head>
 <body>
 <div id="root"></div>
@@ -322,7 +386,7 @@ var d=null!=c&&c.hydratedSources||null,e=!1,f="",g=aj;null!==c&&void 0!==c&&(!0=
 function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmountComponentAtNode=function(a){if(!Vd(a))throw Error(m(40));return a._reactRootContainer?(yb(function(){Wd(null,null,a,!1,function(){a._reactRootContainer=null;a[Ja]=null})}),!0):!1};Q.unstable_batchedUpdates=Tf;Q.unstable_renderSubtreeIntoContainer=function(a,b,c,d){if(!Vd(c))throw Error(m(200));if(null==a||void 0===a._reactInternals)throw Error(m(38));return Wd(a,b,c,!1,d)};Q.version="18.3.1-next-f1338f8080-20240426"});
 })();
 </script>
-<script>/* 앱 본체 v1.0.0 — Babel 7.26.4로 빌드 시점 변환(완성본에 Babel 미포함) */
+<script>/* 앱 본체 v1.1.0 — Babel 7.26.4로 빌드 시점 변환(완성본에 Babel 미포함) */
 const {
   useState,
   useMemo,
@@ -3203,6 +3267,60 @@ ReactDOM.createRoot(document.getElementById("root")).render(React.createElement(
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => { navigator.serviceWorker.register("./sw.js").catch(() => {}); });
 }
+</script>
+<script>
+/* v1.1: 홈 화면 설치 버튼(beforeinstallprompt) + iOS 안내 배너 */
+(function () {
+  var standalone = (window.matchMedia && matchMedia("(display-mode: standalone)").matches) || window.navigator.standalone === true;
+  if (standalone) return; // 이미 설치되어 앱으로 실행 중
+  var deferred = null, btn = null;
+  function makeBtn() {
+    if (btn) { btn.style.display = "block"; return; }
+    btn = document.createElement("button");
+    btn.id = "pwa-install";
+    btn.textContent = "📲 홈 화면에 설치";
+    btn.style.cssText = "position:fixed;right:14px;bottom:14px;z-index:9998;height:46px;padding:0 18px;background:#26221C;color:#F3EDDF;border:1px solid #8A6F4D;border-radius:999px;font-size:14px;font-weight:700;box-shadow:0 3px 10px rgba(0,0,0,.3)";
+    btn.onclick = function () {
+      if (!deferred) return;
+      deferred.prompt();
+      deferred.userChoice.then(function () { btn.style.display = "none"; deferred = null; });
+    };
+    document.body.appendChild(btn);
+  }
+  window.addEventListener("beforeinstallprompt", function (e) {
+    e.preventDefault();
+    deferred = e;
+    if (document.body) makeBtn();
+    else document.addEventListener("DOMContentLoaded", makeBtn);
+  });
+  window.addEventListener("appinstalled", function () { if (btn) btn.style.display = "none"; deferred = null; });
+  // iOS: beforeinstallprompt가 없으므로 안내 배너 (닫으면 재표시 안 함).
+  // 인앱브라우저에는 사파리 공유 버튼이 없어 안내 자체를 건너뜀 (탈출 배너가 담당)
+  var inapp = /KAKAOTALK|\bLine\/|NAVER\(inapp|inapp; search|FBAN|FBAV|Instagram|DaumApps/i.test(navigator.userAgent);
+  var ios = /iPhone|iPad|iPod/i.test(navigator.userAgent) && !window.MSStream && !inapp;
+  function makeIos() {
+    if (document.getElementById("ios-hint")) return;
+    var bar = document.createElement("div");
+    bar.id = "ios-hint";
+    bar.style.cssText = "position:fixed;left:10px;right:10px;bottom:12px;z-index:9998;background:#26221C;color:#F3EDDF;border-radius:10px;padding:12px 40px 12px 14px;font-size:13px;line-height:1.6;box-shadow:0 3px 12px rgba(0,0,0,.35);font-family:sans-serif";
+    bar.innerHTML = '앱처럼 쓰시려면: 사파리 아래 <b>공유 버튼(네모에 화살표)</b>을 누르고 <b>"홈 화면에 추가"</b>를 선택하세요.' +
+      '<button id="ios-hint-close" style="position:absolute;right:8px;top:8px;width:28px;height:28px;background:transparent;color:#F3EDDF;border:1px solid #8A6F4D;border-radius:6px">×</button>';
+    document.body.appendChild(bar);
+    document.getElementById("ios-hint-close").onclick = function () {
+      try { localStorage.setItem("myeongun-ios-hint-closed", "1"); } catch (e) {}
+      bar.remove();
+    };
+  }
+  if (ios) {
+    var closed = null;
+    try { closed = localStorage.getItem("myeongun-ios-hint-closed"); } catch (e) {}
+    if (!closed) {
+      if (document.body) makeIos();
+      else document.addEventListener("DOMContentLoaded", makeIos);
+    }
+  }
+  window.__installTest = { makeBtn: makeBtn, makeIos: makeIos };
+})();
 </script>
 </body>
 </html>

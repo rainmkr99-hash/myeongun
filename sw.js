@@ -1,5 +1,5 @@
 /* 오늘의 명운 — 오프라인 캐시 (전체 자산, cache-first) */
-const CACHE = "myeongun-v1.0.0";
+const CACHE = "myeongun-v1.1.0";
 const ASSETS = ["./", "./index.html", "./manifest.json", "./icon-192.png", "./icon-512.png"];
 self.addEventListener("install", (e) => {
   e.waitUntil(caches.open(CACHE).then((c) => c.addAll(ASSETS)).then(() => self.skipWaiting()));
