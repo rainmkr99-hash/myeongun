@@ -10,70 +10,6 @@
 <link rel="icon" href="./icon-192.png">
 <link rel="apple-touch-icon" href="./icon-192.png">
 <style>html,body{margin:0;padding:0;background:#F3EDDF}</style>
-<script>
-/* v1.1: 인앱브라우저 자동 탈출 — 카카오톡·라인·네이버(안드로이드) 스킴/파라미터 이동.
-   네트워크 요청이 아니라 앱 전환 스킴이며, 해당 인앱 환경에서만 작동(오프라인 요건 예외 승인분). */
-(function () {
-  var ua = navigator.userAgent || "";
-  var kakao = /KAKAOTALK/i.test(ua);
-  var line = /\bLine\//i.test(ua);
-  var naver = /NAVER\(inapp|inapp; search/i.test(ua);
-  var etc = /FBAN|FBAV|Instagram|DaumApps/i.test(ua);
-  function escapeUrl() {
-    var here = location.href.split("#")[0];
-    if (kakao) return "kakaotalk://web/openExternal?url=" + encodeURIComponent(here);
-    if (line) {
-      if (/[?&]openExternalBrowser=1/.test(here)) return null; // 이미 시도됨 — 재추가 방지
-      return here + (here.indexOf("?") > -1 ? "&" : "?") + "openExternalBrowser=1";
-    }
-    if (naver && /Android/i.test(ua)) return "intent://" + location.host + location.pathname + location.search + "#Intent;scheme=https;package=com.android.chrome;end";
-    return null;
-  }
-  function goOut() {
-    var u = escapeUrl();
-    if (!u) { showBanner(); return; }
-    if (line) location.replace(u);
-    else location.href = u;
-  }
-  function copyAddr() {
-    var here = location.href.split("#")[0].split("?")[0];
-    try {
-      var ta = document.createElement("textarea");
-      ta.value = here; document.body.appendChild(ta); ta.select();
-      document.execCommand("copy"); document.body.removeChild(ta);
-      var t = document.getElementById("inapp-copy"); if (t) t.textContent = "복사됨!";
-    } catch (e) {}
-  }
-  function showBanner() {
-    if (document.getElementById("inapp-banner")) return;
-    var make = function () {
-      if (document.getElementById("inapp-banner")) return;
-      var b = document.createElement("div");
-      b.id = "inapp-banner";
-      b.style.cssText = "position:fixed;top:0;left:0;right:0;z-index:9999;background:#26221C;color:#F3EDDF;padding:14px 14px 16px;box-shadow:0 2px 10px rgba(0,0,0,.35);font-family:sans-serif";
-      b.innerHTML = '<div id="inapp-msg" style="font-size:13px;line-height:1.6;margin-bottom:10px">지금은 앱 속 브라우저라 저장·설치가 제한될 수 있어요.<br>기본 브라우저로 열면 모든 기능을 쓸 수 있습니다.</div>' +
-        '<button id="inapp-open" style="width:100%;height:48px;background:#B8352B;color:#fff;border:none;border-radius:6px;font-size:16px;font-weight:700">크롬(기본 브라우저)으로 열기</button>' +
-        '<div style="display:flex;gap:8px;margin-top:8px"><button id="inapp-copy" style="flex:1;height:38px;background:transparent;color:#F3EDDF;border:1px solid #8A6F4D;border-radius:6px;font-size:13px">주소 복사</button>' +
-        '<button id="inapp-close" style="width:38px;height:38px;background:transparent;color:#F3EDDF;border:1px solid #8A6F4D;border-radius:6px;font-size:15px">×</button></div>';
-      document.body.appendChild(b);
-      if (!escapeUrl()) { // 자동 탈출 스킴이 없는 환경(페북·인스타·네이버 iOS 등): 복사 안내로 전환
-        b.querySelector("#inapp-open").style.display = "none";
-        b.querySelector("#inapp-msg").innerHTML = "이 앱 안에서는 자동으로 열 수 없어요.<br>아래 <b>주소 복사</b>를 누른 뒤, 크롬이나 사파리 주소창에 붙여넣어 주세요.";
-      }
-      document.getElementById("inapp-open").onclick = goOut;
-      document.getElementById("inapp-copy").onclick = copyAddr;
-      document.getElementById("inapp-close").onclick = function () { b.remove(); };
-    };
-    if (document.body) make();
-    else document.addEventListener("DOMContentLoaded", make);
-  }
-  window.__inappTest = { escapeUrl: escapeUrl, showBanner: showBanner, detected: { kakao: kakao, line: line, naver: naver, etc: etc } };
-  if (!(kakao || line || naver || etc)) return; // 일반 브라우저: 아무것도 하지 않음
-  if (line && /[?&]openExternalBrowser=1/.test(location.search)) { showBanner(); return; } // 라인 재귀 방지
-  goOut();
-  setTimeout(function () { if (!document.hidden) showBanner(); }, 1200); // 1.2초 내 탈출 실패 시 폴백
-})();
-</script>
 </head>
 <body>
 <div id="root"></div>
@@ -386,7 +322,7 @@ var d=null!=c&&c.hydratedSources||null,e=!1,f="",g=aj;null!==c&&void 0!==c&&(!0=
 function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmountComponentAtNode=function(a){if(!Vd(a))throw Error(m(40));return a._reactRootContainer?(yb(function(){Wd(null,null,a,!1,function(){a._reactRootContainer=null;a[Ja]=null})}),!0):!1};Q.unstable_batchedUpdates=Tf;Q.unstable_renderSubtreeIntoContainer=function(a,b,c,d){if(!Vd(c))throw Error(m(200));if(null==a||void 0===a._reactInternals)throw Error(m(38));return Wd(a,b,c,!1,d)};Q.version="18.3.1-next-f1338f8080-20240426"});
 })();
 </script>
-<script>/* 앱 본체 v1.3.0 — Babel 7.26.4로 빌드 시점 변환(완성본에 Babel 미포함) */
+<script>/* 앱 본체 v1.5.0 — Babel 7.26.4로 빌드 시점 변환(완성본에 Babel 미포함) */
 const {
   useState,
   useMemo,
@@ -3232,10 +3168,11 @@ const STR_CONCL = {
 };
 function SajuFortune() {
   const [name, setName] = useState("");
-  const [date, setDate] = useState("1974-05-21");
-  const [time, setTime] = useState("00:30");
-  const [gender, setGender] = useState("여");
+  const [date, setDate] = useState(""); // 배포본: 초기 공란(저장 프로필은 아래 loadProfile로 복원)
+  const [time, setTime] = useState("");
+  const [gender, setGender] = useState(""); // 미선택
   const [cityIdx, setCityIdx] = useState(0);
+  const [formHint, setFormHint] = useState("");
   const [noTime, setNoTime] = useState(false);
   const [yajasi, setYajasi] = useState(false);
   const [profiles, setProfiles] = useState([]);
@@ -3306,6 +3243,11 @@ function SajuFortune() {
     });
   };
   const calc = () => {
+    if (!date || !gender) {
+      setFormHint("생년월일과 성별을 입력해 주세요.");
+      return;
+    }
+    setFormHint("");
     const v = {
       name: name.trim(),
       date,
@@ -3482,9 +3424,16 @@ function SajuFortune() {
   }, c.k)))), /*#__PURE__*/React.createElement("div", {
     className: "sj-field sj-span2",
     style: {
-      justifyContent: "flex-end"
+      justifyContent: "flex-end",
+      alignItems: "center",
+      gap: 10
     }
-  }, /*#__PURE__*/React.createElement("button", {
+  }, formHint && /*#__PURE__*/React.createElement("span", {
+    style: {
+      color: "#B8352B",
+      fontSize: 12.5
+    }
+  }, formHint), /*#__PURE__*/React.createElement("button", {
     className: "sj-btn",
     onClick: calc
   }, "\uC0AC\uC8FC \uC138\uC6B0\uAE30"))), /*#__PURE__*/React.createElement("div", {
@@ -3824,59 +3773,169 @@ if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => { navigator.serviceWorker.register("./sw.js").catch(() => {}); });
 }
 </script>
-<script>
-/* v1.1: 홈 화면 설치 버튼(beforeinstallprompt) + iOS 안내 배너 */
+<script>/* 껍데기 UI: 재방문(주소 복사)·선택형 탈출 v1.5.0 */
+var DISPLAY_URL = "https://bit.ly/myungun"; // 표시·복사용 주소 — 짧은 주소 생기면 여기만 교체
 (function () {
+  var ua = window.__forceUA || navigator.userAgent || "";
+  function isInapp(u) {
+    u = u || ua;
+    return /KAKAOTALK/i.test(u) || /\bLine\//i.test(u) || /NAVER\(inapp/i.test(u) ||
+           /inapp; search/i.test(u) || /FBAN|FBAV|Instagram|DaumApps/i.test(u) || /; wv\)/i.test(u);
+  }
+  var inapp = isInapp(ua);
+  function realUrl() { return location.href.split("#")[0]; }        // 실제 현재 주소(github.io 등 — 탈출 스킴용)
+  function shownUrl() { return DISPLAY_URL.replace(/^https?:\/\//, ""); }                 // 표시용(프로토콜 제외)
+  function copyText() { return /^https?:\/\//.test(DISPLAY_URL) ? DISPLAY_URL : "https://" + DISPLAY_URL; } // 복사용(전체 주소)
+  function escapeUrl(u) {                                           // 인앱→외부 브라우저 스킴 (눌렀을 때만)
+    u = u || ua;
+    var here = realUrl();
+    if (/KAKAOTALK/i.test(u)) return "kakaotalk://web/openExternal?url=" + encodeURIComponent(here);
+    if (/\bLine\//i.test(u)) return here + (here.indexOf("?") > -1 ? "&" : "?") + "openExternalBrowser=1";
+    if (/Android/i.test(u)) return "intent://" + location.host + location.pathname + location.search + "#Intent;scheme=https;package=com.android.chrome;end";
+    return null;                                                    // iOS 페북·인스타 등: 스킴 없음 → 복사로만
+  }
+  var flashT = null;
+  function flash(msg) {
+    var el = document.getElementById("shell-flash");
+    if (!el) return;
+    el.textContent = msg; el.style.opacity = "1";
+    if (flashT) clearTimeout(flashT);
+    flashT = setTimeout(function () { el.style.opacity = "0"; }, 3400);
+  }
+  function legacyCopy(txt, ok, fail) {
+    var ta = document.createElement("textarea");                   // try 밖에 선언 → finally에서 확실히 제거
+    try {
+      ta.value = txt; ta.setAttribute("readonly", "");
+      ta.style.cssText = "position:fixed;left:-9999px;top:0";
+      document.body.appendChild(ta); ta.select();
+      try { ta.setSelectionRange(0, txt.length); } catch (e) {}
+      document.execCommand("copy") ? ok() : fail();
+    } catch (e) { fail(); }                                        // execCommand가 예외를 던져도
+    finally { if (ta.parentNode) ta.parentNode.removeChild(ta); }  // 임시 textarea 잔류 방지
+  }
+  function copyUrl() {
+    var txt = copyText();
+    var ok = function () { flash("복사됨 — 크롬 새 탭에 붙여넣으면 다시 열려요"); };
+    var fail = function () { flash("복사가 안 돼요 — 주소를 길게 눌러 직접 복사하세요: " + shownUrl()); };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(txt).then(ok, function () { legacyCopy(txt, ok, fail); });
+    } else legacyCopy(txt, ok, fail);
+  }
+  function openExternal() {
+    var here = realUrl();
+    if (/\bLine\//i.test(ua) && /[?&]openExternalBrowser=1/.test(here)) {
+      flash("안 열리면 아래 ‘주소 복사’를 눌러 크롬에 붙여넣어 주세요"); return;
+    }
+    var u = escapeUrl(ua);
+    if (!u) { flash("이 앱에선 자동 열기가 안 돼요 — 아래 ‘주소 복사’를 눌러 크롬에 붙여넣어 주세요"); return; }
+    if (/\bLine\//i.test(ua)) location.replace(u); else location.href = u;
+    setTimeout(function () { if (!document.hidden) flash("안 열리면 아래 ‘주소 복사’를 눌러 크롬에 붙여넣어 주세요"); }, 1500);
+  }
+  function build() {
+    if (document.getElementById("shell-bar")) return;
+
+    var flashEl = document.createElement("div");
+    flashEl.id = "shell-flash";
+    flashEl.setAttribute("role", "status");
+    flashEl.style.cssText = "position:fixed;left:10px;right:10px;bottom:62px;z-index:9992;background:#3a3226;color:#F3EDDF;font-family:sans-serif;font-size:12.5px;line-height:1.5;padding:9px 12px;border-radius:8px;opacity:0;transition:opacity .25s;pointer-events:none;box-shadow:0 2px 10px rgba(0,0,0,.3)";
+    document.body.appendChild(flashEl);
+
+    if (inapp) {
+      var help = document.createElement("div");
+      help.id = "shell-help";
+      help.style.cssText = "position:fixed;left:10px;right:10px;bottom:calc(47px + env(safe-area-inset-bottom));z-index:9989;color:#a08a63;font-family:sans-serif;font-size:11px;text-align:center;pointer-events:none";
+      help.textContent = "주소창·메뉴가 안 보이나요? ‘크롬에서 열기’를 누르거나 주소를 복사하세요.";
+      document.body.appendChild(help);
+    }
+
+    var bar = document.createElement("div");
+    bar.id = "shell-bar";
+    bar.style.cssText = "position:fixed;left:0;right:0;bottom:0;z-index:9990;background:#26221C;color:#E9E0CC;font-family:sans-serif;font-size:12px;padding:7px 10px;padding-bottom:calc(7px + env(safe-area-inset-bottom));display:flex;align-items:center;gap:8px;box-shadow:0 -2px 8px rgba(0,0,0,.22)";
+    var inner = '<span style="opacity:.6;flex-shrink:0">주소</span>' +
+      '<span id="shell-addr" style="flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-family:monospace;color:#F3EDDF">' + shownUrl() + '</span>' +
+      '<button id="shell-copy" style="flex-shrink:0;height:31px;padding:0 12px;background:#8A6F4D;color:#fff;border:none;border-radius:6px;font-size:12px;font-weight:700">주소 복사</button>';
+    if (inapp) inner += '<button id="shell-open" style="flex-shrink:0;height:31px;padding:0 11px;background:transparent;color:#E9E0CC;border:1px solid #6b5a3f;border-radius:6px;font-size:12px">크롬에서 열기</button>';
+    bar.innerHTML = inner;
+    document.body.appendChild(bar);
+
+    var pad = document.getElementById("shell-pad") || document.createElement("style");
+    pad.id = "shell-pad";
+    document.head.appendChild(pad);
+    // 하드코딩 대신 실제 바 높이만큼 하단 여백 예약(글꼴 확대·2줄 대비). offsetHeight엔 safe-area 패딩 포함.
+    var syncPad = function () { pad.textContent = "body{padding-bottom:" + bar.offsetHeight + "px}"; };
+    syncPad();
+    window.addEventListener("resize", syncPad);
+    window.addEventListener("orientationchange", syncPad);
+
+    document.getElementById("shell-copy").onclick = copyUrl;
+    if (inapp) document.getElementById("shell-open").onclick = openExternal;
+  }
+
+  // 테스트 훅 — UA 인자로 순수 로직 검증(프로덕션 무해). autoNavigates=false: 어떤 UA든 로드 시 자동 이동 없음.
+  window.__shellTest = {
+    isInapp: isInapp, inapp: inapp, escapeUrlFor: function (u) { return escapeUrl(u); },
+    shownUrl: shownUrl, copyText: copyText, autoNavigates: false, copyUrl: copyUrl, openExternal: openExternal
+  };
+
+  if (document.body) build(); else document.addEventListener("DOMContentLoaded", build);
+})();</script>
+<script>/* 부드러운 설치 안내 v1.5.0 */
+(function () {
+  var ua = window.__forceUA || navigator.userAgent || "";
   var standalone = (window.matchMedia && matchMedia("(display-mode: standalone)").matches) || window.navigator.standalone === true;
-  if (standalone) return; // 이미 설치되어 앱으로 실행 중
-  var deferred = null, btn = null;
-  function makeBtn() {
-    if (btn) { btn.style.display = "block"; return; }
-    btn = document.createElement("button");
-    btn.id = "pwa-install";
-    btn.textContent = "📲 홈 화면에 설치";
-    btn.style.cssText = "position:fixed;right:14px;bottom:14px;z-index:9998;height:46px;padding:0 18px;background:#26221C;color:#F3EDDF;border:1px solid #8A6F4D;border-radius:999px;font-size:14px;font-weight:700;box-shadow:0 3px 10px rgba(0,0,0,.3)";
-    btn.onclick = function () {
+  if (standalone) return;                                          // 이미 설치되어 앱으로 실행 중
+  var inapp = /KAKAOTALK/i.test(ua) || /\bLine\//i.test(ua) || /NAVER\(inapp/i.test(ua) ||
+              /inapp; search/i.test(ua) || /FBAN|FBAV|Instagram|DaumApps/i.test(ua) || /; wv\)/i.test(ua);
+  if (inapp) return;                                               // 인앱은 설치 불가 — 하단 바(복사/탈출)가 담당
+  var KEY = "myeongun-install-hint-closed";
+  try { if (localStorage.getItem(KEY)) return; } catch (e) {}
+  var deferred = null, dismissed = false, syncTop = null;
+  function removeBar() {
+    if (syncTop) { window.removeEventListener("resize", syncTop); window.removeEventListener("orientationchange", syncTop); syncTop = null; }
+    var b = document.getElementById("install-bar"); if (b) b.remove();
+    var p = document.getElementById("install-pad"); if (p) p.remove();
+  }
+  function bar(msg, actLabel, onAct) {
+    if (dismissed || document.getElementById("install-bar")) return;  // 이 세션에서 닫았으면 다시 안 띄움
+    var b = document.createElement("div");
+    b.id = "install-bar";
+    b.style.cssText = "position:fixed;left:0;right:0;top:0;z-index:9995;background:#2E2A22;color:#F3EDDF;font-family:sans-serif;font-size:12.5px;line-height:1.4;padding:8px 10px;padding-top:calc(8px + env(safe-area-inset-top));display:flex;align-items:center;gap:8px;box-shadow:0 2px 8px rgba(0,0,0,.2)";
+    var inner = '<span style="flex:1;min-width:0">' + msg + '</span>';
+    if (actLabel) inner += '<button id="install-do" style="flex-shrink:0;height:30px;padding:0 12px;background:#8A6F4D;color:#fff;border:none;border-radius:6px;font-size:12px;font-weight:700">' + actLabel + '</button>';
+    inner += '<button id="install-x" aria-label="닫기" style="flex-shrink:0;width:30px;height:30px;background:transparent;color:#E9E0CC;border:1px solid #5f5140;border-radius:6px;font-size:15px">×</button>';
+    b.innerHTML = inner;
+    document.body.appendChild(b);
+    var pad = document.createElement("style"); pad.id = "install-pad";
+    document.head.appendChild(pad);
+    // 문구가 2줄로 접혀도 가리지 않도록 실제 바 높이만큼 상단 여백 예약(offsetHeight엔 safe-area 포함).
+    syncTop = function () { if (b.parentNode) pad.textContent = "body{padding-top:" + b.offsetHeight + "px}"; };
+    syncTop();
+    window.addEventListener("resize", syncTop);
+    window.addEventListener("orientationchange", syncTop);
+    if (actLabel && onAct) document.getElementById("install-do").onclick = onAct;
+    document.getElementById("install-x").onclick = function () {
+      dismissed = true;
+      try { localStorage.setItem(KEY, "1"); } catch (e) {}
+      removeBar();
+    };
+  }
+  function androidBar() {
+    bar("설치하면 다음부터 홈 화면 아이콘으로 바로 열려요.", "설치", function () {
       if (!deferred) return;
       deferred.prompt();
-      deferred.userChoice.then(function () { btn.style.display = "none"; deferred = null; });
-    };
-    document.body.appendChild(btn);
+      deferred.userChoice.then(function () { deferred = null; removeBar(); });
+    });
   }
   window.addEventListener("beforeinstallprompt", function (e) {
-    e.preventDefault();
-    deferred = e;
-    if (document.body) makeBtn();
-    else document.addEventListener("DOMContentLoaded", makeBtn);
+    e.preventDefault(); deferred = e;
+    if (document.body) androidBar(); else document.addEventListener("DOMContentLoaded", androidBar);
   });
-  window.addEventListener("appinstalled", function () { if (btn) btn.style.display = "none"; deferred = null; });
-  // iOS: beforeinstallprompt가 없으므로 안내 배너 (닫으면 재표시 안 함).
-  // 인앱브라우저에는 사파리 공유 버튼이 없어 안내 자체를 건너뜀 (탈출 배너가 담당)
-  var inapp = /KAKAOTALK|\bLine\/|NAVER\(inapp|inapp; search|FBAN|FBAV|Instagram|DaumApps/i.test(navigator.userAgent);
-  var ios = /iPhone|iPad|iPod/i.test(navigator.userAgent) && !window.MSStream && !inapp;
-  function makeIos() {
-    if (document.getElementById("ios-hint")) return;
-    var bar = document.createElement("div");
-    bar.id = "ios-hint";
-    bar.style.cssText = "position:fixed;left:10px;right:10px;bottom:12px;z-index:9998;background:#26221C;color:#F3EDDF;border-radius:10px;padding:12px 40px 12px 14px;font-size:13px;line-height:1.6;box-shadow:0 3px 12px rgba(0,0,0,.35);font-family:sans-serif";
-    bar.innerHTML = '앱처럼 쓰시려면: 사파리 아래 <b>공유 버튼(네모에 화살표)</b>을 누르고 <b>"홈 화면에 추가"</b>를 선택하세요.' +
-      '<button id="ios-hint-close" style="position:absolute;right:8px;top:8px;width:28px;height:28px;background:transparent;color:#F3EDDF;border:1px solid #8A6F4D;border-radius:6px">×</button>';
-    document.body.appendChild(bar);
-    document.getElementById("ios-hint-close").onclick = function () {
-      try { localStorage.setItem("myeongun-ios-hint-closed", "1"); } catch (e) {}
-      bar.remove();
-    };
+  window.addEventListener("appinstalled", function () { deferred = null; removeBar(); });
+  if (/iPhone|iPad|iPod/i.test(ua) && !window.MSStream) {          // iOS: beforeinstallprompt 없음 → 안내만
+    var mk = function () { bar("설치하면 홈 화면 아이콘으로 바로 열려요 — 사파리 <b>공유 → 홈 화면에 추가</b>", null, null); };
+    if (document.body) mk(); else document.addEventListener("DOMContentLoaded", mk);
   }
-  if (ios) {
-    var closed = null;
-    try { closed = localStorage.getItem("myeongun-ios-hint-closed"); } catch (e) {}
-    if (!closed) {
-      if (document.body) makeIos();
-      else document.addEventListener("DOMContentLoaded", makeIos);
-    }
-  }
-  window.__installTest = { makeBtn: makeBtn, makeIos: makeIos };
-})();
-</script>
+  window.__installTest = { androidBar: androidBar, bar: bar, hasDeferred: function () { return !!deferred; }, inapp: inapp };
+})();</script>
 </body>
 </html>
