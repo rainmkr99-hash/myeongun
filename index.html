@@ -322,7 +322,7 @@ var d=null!=c&&c.hydratedSources||null,e=!1,f="",g=aj;null!==c&&void 0!==c&&(!0=
 function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmountComponentAtNode=function(a){if(!Vd(a))throw Error(m(40));return a._reactRootContainer?(yb(function(){Wd(null,null,a,!1,function(){a._reactRootContainer=null;a[Ja]=null})}),!0):!1};Q.unstable_batchedUpdates=Tf;Q.unstable_renderSubtreeIntoContainer=function(a,b,c,d){if(!Vd(c))throw Error(m(200));if(null==a||void 0===a._reactInternals)throw Error(m(38));return Wd(a,b,c,!1,d)};Q.version="18.3.1-next-f1338f8080-20240426"});
 })();
 </script>
-<script>/* 앱 본체 v1.9.0 — Babel 7.26.4로 빌드 시점 변환(완성본에 Babel 미포함). v1.9: 궁통보감 조후용신표(10×12)·종격(종아·종재·종관·종왕·종강) 희기 반전·충 종류 차등(왕지/생지/고지)·탐합망충·방합·육합 화기·양인충/백호충 감점·삼합 원국 뿌리 가중·세운병림·대운 천간 합충·교운기·투출. v1.6: 일운 정밀화(천간 관계·천극지충·복음·반합·덕귀인·뿌리 세기·급소 연속 희기·월운 맥락). v1.7: 핵심 3문장 한 줄화(원리 용어 제거, 꼬리표), 분야 상황+행동 압축 및 힘/조심 표시, 총운 압축. v1.8: 정밀화 항목을 월운·년운에도 적용(위치 가중은 기간별), 월운에 년운 맥락 1/4 가산, 월운·년운 핵심 네 줄(리듬: 좋은 날·조심할 날 / 달력: 좋은 달·조심할 달), 분야·총운 압축을 월·년에도 적용 */
+<script>/* 앱 본체 v1.9.1 — Babel 7.26.4로 빌드 시점 변환(완성본에 Babel 미포함). v1.9.1: 실측 보정(사건 우선 — 충·형 급소 완화 하한 0.7, 합 보너스 상한, 귀인·조후 0.5, 삼형 2.0, 충 월령 가중, 지지 복음, 양인운 감점, 격국 운(파격은 항상·상신은 신강만), 상신 합거). v1.9: 궁통보감 조후용신표(10×12)·종격(종아·종재·종관·종왕·종강) 희기 반전·충 종류 차등(왕지/생지/고지)·탐합망충·방합·육합 화기·양인충/백호충 감점·삼합 원국 뿌리 가중·세운병림·대운 천간 합충·교운기·투출. v1.6: 일운 정밀화(천간 관계·천극지충·복음·반합·덕귀인·뿌리 세기·급소 연속 희기·월운 맥락). v1.7: 핵심 3문장 한 줄화(원리 용어 제거, 꼬리표), 분야 상황+행동 압축 및 힘/조심 표시, 총운 압축. v1.8: 정밀화 항목을 월운·년운에도 적용(위치 가중은 기간별), 월운에 년운 맥락 1/4 가산, 월운·년운 핵심 네 줄(리듬: 좋은 날·조심할 날 / 달력: 좋은 달·조심할 달), 분야·총운 압축을 월·년에도 적용 */
 const {
   useState,
   useMemo,
@@ -845,12 +845,12 @@ const STRENGTH_CUTS = [0.4, 0.6]; // 부조율 컷: 미만 신약 / 초과 신�
 const DIST_CACHE_MAX = 300; // 분포 캐시 상한(초과 시 비움 — 재계산 가능하므로 안전)
 const W_CHUNG = 1.0,
   W_HYUNG = 1.0; // 충·형 감점 기본치
-const W_YUKHAP_ILJI = 1.0,
-  W_YUKHAP_OTHER = 0.5; // 육합 가점(일지 / 그 외)
+const W_YUKHAP_ILJI = 0.7,
+  W_YUKHAP_OTHER = 0.4; // 육합 가점(일지 / 그 외) — v1.9.1: 합은 묶임·지체, 충보다 가볍게(1.0/0.5 → 0.7/0.4)
 const W_SAMHAP = 1.0,
-  W_JOHU = 1.0,
-  W_GWIIN = 1.0; // 삼합·조후·천을귀인
-const SAMHYUNG_PENALTY = 1.5; // 삼형 완성 감점 — 완성 시 구성 이형·충의 중복 감점 금지
+  W_JOHU = 0.5,
+  W_GWIIN = 0.5; // 삼합·조후·천을귀인 (v1.9.1 실측 보정: 조후·귀인은 완충이지 사건을 덮지 못한다 — 1.0→0.5)
+const SAMHYUNG_PENALTY = 2.0; // (v1.9.1: 1.5→2.0) // 삼형 완성 감점 — 완성 시 구성 이형·충의 중복 감점 금지
 const CLUE_MIN = 0.2; // 월운 반전 단서로 인정할 영역 점수 최소 크기
 /* ─── v1.6 일운 정밀화 상수 (일운 전용 — 월운·년운 판정에는 영향 없음) ─── */
 const DAY_POS_W = {
@@ -884,7 +884,55 @@ const CHUNG_KIND_MUL = {
 const W_TAMHAP = 0.4; // v1.9 탐합망충: 맞는 원국 글자가 원국 안에서 육합에 묶여 있으면 충 감점 ×(1−0.4)
 const W_TAMHAP_SELF = 0.3; // 운의 글자가 다른 원국 글자와 육합이면(합을 탐해 충을 잊음) 충 감점 ×(1−0.3)
 const W_BANGHAP = 0.8; // v1.9 방합(寅卯辰·巳午未·申酉戌·亥子丑) 완성 — 계절국
-const W_HAP_EL = 0.3; // v1.9 육합의 화기(化氣) 오행 희기 가산
+const W_HAP_EL = 0.5; // v1.9 육합의 화기(化氣) 오행 희기 가산 (v1.9.1: 0.3→0.5)
+const YS_EVENT_FLOOR = 0.7; // v1.9.1 충·형의 급소 완화 하한 — 기신을 맞아도 사건은 사건(감점 ≥ 70%)
+const YS_HAP_CAP = 1.0; // v1.9.1 합의 기신-묶임 보너스 상한 — 합거의 이득은 기본치까지만
+const W_CHUNG_WOLRYEONG = 0.6; // v1.9.1 충 월령(월지 충) 추가 감점 — 격의 뿌리·직장·부모 궁이 흔들림 (년 1.0 / 월 0.8 / 일 0.5 배)
+const W_BR_BOKEUM = 0.25; // v1.9.1 지지 복음 — 운의 지지가 원국 지지와 같은 글자(월지·일지·시지; 년지는 0.6배): 그 궁의 일이 되풀이·정체
+const W_YANGIN_RUN = 0.3; // v1.9.1 양인운(운의 지지가 일간의 양인) 감점 — 칼날: 수술·사고·쟁재
+const W_GYEOK_UN = 0.6; // v1.9.1 격국 운(자평진전 순역용) — 운의 천간 십성이 격의 상신이면 +, 파격이면 −
+const GYEOK_UN = {
+  정관격: {
+    희: ["정재", "편재", "정인", "편인"],
+    기: ["상관", "편관"]
+  },
+  편관격: {
+    희: ["식신", "정인", "편인"],
+    기: ["편재", "정재", "편관"]
+  },
+  정재격: {
+    희: ["식신", "상관", "정관"],
+    기: ["비견", "겁재"]
+  },
+  편재격: {
+    희: ["식신", "상관", "정관", "편관"],
+    기: ["비견", "겁재"]
+  },
+  식신격: {
+    희: ["편재", "정재"],
+    기: ["편인"]
+  },
+  상관격: {
+    희: ["편재", "정재", "정인"],
+    기: ["정관"]
+  },
+  정인격: {
+    희: ["정관", "편관", "비견"],
+    기: ["편재", "정재"]
+  },
+  편인격: {
+    희: ["편관", "정관", "편재"],
+    기: ["식신"]
+  },
+  건록격: {
+    희: ["정관", "편관", "편재", "정재"],
+    기: ["비견", "겁재", "정인", "편인"]
+  },
+  양인격: {
+    희: ["편관", "정관", "편재", "정재"],
+    기: ["겁재", "비견", "정인", "편인"]
+  }
+}; // 자평진전 격국 순용·역용: 격을 돕는 상신(희)과 격을 깨는 십성(기)
 const W_YANGIN_CHUNG = 0.5; // v1.9 양인충(원국 양인 지지를 운이 충) 감점 — 고전이 가장 무겁게 보는 신호 중 하나
 const W_BAEKHO_CHUNG = 0.3; // v1.9 원국 백호 기둥 충 감점
 const W_BYEONGRIM = 0.4; // v1.9 세운병림(세운 간지 = 대운 간지) 감점(변동성)
@@ -1163,7 +1211,54 @@ function evaluateLuck(kind, luckP, prof, ctx = {}) {
     addArea(ysStem, AREA_BY_RELIDX[relIdx(STEM_EL[ls])]);
     addArea(ysBr, AREA_BY_RELIDX[relIdx(STEM_EL[BRANCH_MAIN[lb]])]);
   }
-  const favor = el => Math.max(-1, Math.min(1, rateF(el) + (fine ? ysD[el] : 0))); // 억부 + 급소 합성 희기(반합·덕귀인 문구용)
+  const favor = el => Math.max(-1, Math.min(1, rateF(el) + (fine ? ysD[el] : 0)));
+  /* v1.9.1 격국 운(자평진전 순역용) — 정격일 때, 운의 천간(·지지 정기) 십성이 격의 상신이면 +, 파격이면 − */
+  const gkName = gyeokguk(natal);
+  const gu = frame.type === "정격" ? GYEOK_UN[gkName] : null;
+  if (gu) {
+    const tS = tenGod(dayStem, ls),
+      tB = tenGod(dayStem, BRANCH_MAIN[lb]);
+    const carry = strength === "신강" ? 1 : strength === "중화" ? 0.5 : 0; // 상신 보너스는 격을 감당할 힘이 있을 때만(신약 0·중화 0.5·신강 1); 파격 감점은 항상
+    let gv = (gu.희.includes(tS) ? W_GYEOK_UN * carry : gu.기.includes(tS) ? -W_GYEOK_UN : 0) + (gu.희.includes(tB) ? W_GYEOK_UN * 0.5 * carry : gu.기.includes(tB) ? -W_GYEOK_UN * 0.5 : 0);
+    if (Math.abs(gv) > 0.01) {
+      score += gv;
+      addArea(gv, AREA_BY_RELIDX[relIdx(STEM_EL[ls])]);
+      events.push({
+        t: gv < 0 ? "격국 파격(破格)" : "격국 상신(相神)",
+        w: 0.6 + Math.abs(gv),
+        sc: gv,
+        tg: tS,
+        act: gv < 0 ? `${gkName}의 짜임을 흔드는 ${tS} 기운 — 격이 맡은 영역(직업·돈의 틀)을 지키는 데 집중하세요` : `${gkName}을 살리는 ${tS} 기운 — 본업의 틀 안에서 밀어붙이세요`,
+        basis: `${gkName} ← ${label} 천간 ${STEMS[ls]}(${tS})${Math.abs(gv) > W_GYEOK_UN ? ` · 지지 ${BRANCHES[lb]}(${tB})` : ""}`,
+        d: gv < 0 ? `월령으로 세운 격(${gkName})을 깨는 십성(${tS})이 운으로 들어옵니다. 자평진전의 순역용 기준으로 파격의 시기 — 격이 맡은 영역의 틀이 흔들리니 새 틀을 짜기보다 있는 틀을 지키세요.` : `월령으로 세운 격(${gkName})을 돕는 상신(${tS})이 운으로 들어옵니다. 격이 맡은 영역이 제 길을 찾는 시기입니다.`
+      });
+    }
+  }
+  /* v1.9.1 지지 복음 — 운의 지지가 원국 지지와 같은 글자(기둥 전체가 같은 경우는 복음 이벤트가 따로 다룸) */
+  if (fine) {
+    const natalBr = [["년지", natal.yearP, 0.6], ["월지", natal.monthP, 1], ["일지", natal.dayP, 1]];
+    if (natal.timeP) natalBr.push(["시지", natal.timeP, 1]);
+    for (const [pos, pl, mul] of natalBr) {
+      if (pl[1] !== lb || idx60(luckP) === idx60(pl)) continue;
+      const v = -W_BR_BOKEUM * mul;
+      score += v;
+      addArea(v, {
+        doc: 0.4,
+        rel: 0.3,
+        body: 0.3
+      });
+      events.push({
+        t: "지지 복음",
+        w: 0.55,
+        sc: v,
+        pos,
+        b: lb,
+        act: `${pos} 자리의 묵은 일이 되풀이됩니다 — 새로 벌이기보다 정리하세요`,
+        basis: `${pos} ${BRANCHES[pl[1]]} = ${label} 지지 ${BRANCHES[lb]}`,
+        d: `${label}의 지지가 원국 ${pos}와 같은 글자입니다. 그 궁이 맡은 일(${POS_MEAN_SHORT[pos]})이 되풀이되거나 제자리걸음하기 쉬운 자리이니, 새 결정보다 정리·점검에 쓰세요.`
+      });
+    }
+  } // 억부 + 급소 합성 희기(반합·덕귀인 문구용)
 
   // ② 십이운성 미세 가중 — 억부 연속 강도(부조율 기반, 신약 + / 신강 −)와 곱
   const js = JANGSAENG[dayStem];
@@ -1220,7 +1315,7 @@ function evaluateLuck(kind, luckP, prof, ctx = {}) {
     const w = dangryeong ? Math.min(0.95, wsMap.w[el] + WANG_DANGRYEONG_BONUS) : wsMap.w[el];
     const gate = wangGate(g, w, kind); // 왕쇠 게이트(중립=1)
     const gEff = g * gate; // 급소 × 왕쇠 = 실효 급소
-    const mult = kind === "합" ? 1 - ysS * gEff : 1 + ysS * gEff;
+    const mult = kind === "합" ? Math.min(YS_HAP_CAP, 1 - ysS * gEff) : Math.max(YS_EVENT_FLOOR, 1 + ysS * gEff); // v1.9.1 하한·상한
     let adj = base * mult;
     if (base < 0 && adj > 0 && g >= 0) adj = 0; // 한신·용신 타격이 길로 뒤집히는 것 방지
     if (base > 0 && adj < 0) adj = 0; // 합은 0까지만 약화(합거의 흉 전복은 문구 정비 후 다음 단계)
@@ -1281,7 +1376,8 @@ function evaluateLuck(kind, luckP, prof, ctx = {}) {
       const g = ysD[el];
       const tg = tenGod(dayStem, s);
       if (Math.abs(ls - s) === 5) {
-        const v = Math.abs(g) < YS_MIN_G ? 0 : -W_STEM_HAP * Math.max(-1, Math.min(1, g * 2)) * pw;
+        let v = Math.abs(g) < YS_MIN_G ? 0 : -W_STEM_HAP * Math.max(-1, Math.min(1, g * 2)) * pw;
+        if (gu) v += gu.희.includes(tg) ? -W_STEM_HAP * pw : gu.기.includes(tg) ? W_STEM_HAP * 0.6 * pw : 0; // v1.9.1 격의 상신이 묶이면 파격, 기신이 묶이면 해소
         score += v;
         addArea(v, AREA_BY_RELIDX[relIdx(el)]);
         events.push({
@@ -1353,8 +1449,8 @@ function evaluateLuck(kind, luckP, prof, ctx = {}) {
         basis: `일주 ${STEMS[natal.dayP[0]]}${BRANCHES[natal.dayP[1]]} = ${label} 간지(60일마다 한 번)`,
         d: `${label}의 간지가 내 일주와 똑같이 돌아온 때입니다. 복음이라 하여 같은 소리가 되풀이되듯 익숙한 문제가 다시 올라오고 일의 진도는 더딘 자리이니, 새 결정보다 정리·점검에 쓰면 알찹니다.`
       });
-    } else if (idx60(luckP) === idx60(kind === "month" ? natal.monthP : natal.yearP)) {
-      const sameLvl = kind === "month" ? "월주" : "년주";
+    } else if ([["년주", natal.yearP], ["월주", natal.monthP], ["시주", natal.timeP]].some(([, pl]) => pl && idx60(luckP) === idx60(pl))) {
+      const sameLvl = [["년주", natal.yearP], ["월주", natal.monthP], ["시주", natal.timeP]].find(([, pl]) => pl && idx60(luckP) === idx60(pl))[0];
       const v = -W_BOKEUM * 0.5;
       score += v;
       addArea(v, {
@@ -1366,8 +1462,8 @@ function evaluateLuck(kind, luckP, prof, ctx = {}) {
         w: 0.6,
         sc: v,
         pos: sameLvl,
-        act: sameLvl === "월주" ? "직장·집안의 묵은 사안이 다시 올라옵니다 — 서두르지 말고 정리부터 하세요" : "윗사람·조직과 얽힌 오래된 사안이 다시 올라옵니다 — 서두르지 말고 들어 주세요",
-        basis: `${sameLvl} ${sameLvl === "월주" ? STEMS[natal.monthP[0]] + BRANCHES[natal.monthP[1]] : STEMS[natal.yearP[0]] + BRANCHES[natal.yearP[1]]} = ${label} 간지`,
+        act: sameLvl === "월주" ? "직장·집안의 묵은 사안이 다시 올라옵니다 — 서두르지 말고 정리부터 하세요" : sameLvl === "시주" ? "자녀·아랫사람·마무리 쪽 묵은 일이 되풀이됩니다 — 새로 벌이지 말고 정리하세요" : "윗사람·조직과 얽힌 오래된 사안이 다시 올라옵니다 — 서두르지 말고 들어 주세요",
+        basis: `${sameLvl} ${STEMS[luckP[0]]}${BRANCHES[luckP[1]]} = ${label} 간지`,
         d: "일진이 내 년주와 같은 간지입니다. 바깥일·윗사람 쪽에서 묵은 사안이 되풀이되기 쉬운 날이니, 새 답을 내기보다 들어 주는 쪽이 낫습니다."
       });
     }
@@ -1523,6 +1619,14 @@ function evaluateLuck(kind, luckP, prof, ctx = {}) {
         const tamTag = natalHap || selfHap ? " · 합이 충을 붙듦(탐합망충)" : "";
         score += ya.v;
         addArea(ya.v, AREA_REL.충);
+        if (pos === "월지") {
+          // v1.9.1 충 월령 — 격의 뿌리(월령 정기)가 흔들리는 파격성 추가 감점
+          const wm = -W_CHUNG_WOLRYEONG * (kind === "year" ? 1 : kind === "month" ? 0.8 : 0.5);
+          score += wm;
+          addArea(wm, AREA_REL.충);
+          ya.v += wm;
+          ya.tag += " · 충 월령(격 뿌리) 가중";
+        }
         events.push({
           t: "충(沖)",
           w: 1 + Math.abs(ya.v),
@@ -1816,10 +1920,15 @@ function evaluateLuck(kind, luckP, prof, ctx = {}) {
     });
   }
   if (YANGIN[dayStem] === lb) {
+    score -= W_YANGIN_RUN;
+    addArea(-W_YANGIN_RUN, {
+      body: 0.6,
+      money: 0.4
+    });
     events.push({
       t: "양인(羊刃)",
-      w: 0.45,
-      sc: 0,
+      w: 0.45 + W_YANGIN_RUN,
+      sc: -W_YANGIN_RUN,
       act: "무리한 강행과 '한 번만 더'의 욕심만 줄이세요",
       basis: `일간 ${STEMS[dayStem]}의 양인 ${BRANCHES[YANGIN[dayStem]]} ← ${label} ${BRANCHES[lb]}`,
       d: "칼날처럼 날이 서는 기운입니다. 추진력은 좋으나 과로와 승부욕이 탈이 되기 쉬우니, 오늘은 끝장을 보려 하지 말고 팔 할에서 멈추세요."
@@ -4009,7 +4118,7 @@ function coreEvent(a, prof, seed, kind = "day") {
   } else if (t.startsWith("충")) {
     const luck = LUCK_LAYERS.includes(e.pos);
     const base = luck ? pick(CHUNG_LUCK, seed) : e.ckind === "고지" ? pick(["{P} 쪽 묵은 일이 열린다", "{P}에 쌓아 둔 것이 움직인다"], seed) : e.ckind === "생지" ? pick(["{P} 쪽에 이동·변동이 생긴다", "{P} 일정이 옮겨지기 쉽다"], seed) : pick(CHUNG_BASE, seed);
-    const tail = luck ? pick([" — 방향은 유지, 변경은 보류.", " — 계획을 바꾸지 말고 하루만 지켜본다."], seed, 1) : e.ckind === "고지" ? pick([" — 창고가 열리는 충, 꺼낼 것과 지킬 것을 가른다.", " — 묵은 돈·물건·감정이 드러나니 정리하면 남는다."], seed, 1) : g >= 0.3 ? pick([" — 큰 결정은 오늘 확정하지 않는다.", " — 아픈 자리를 맞는 날, 중요한 결정은 내일."], seed, 1) : g <= -0.3 ? pick([" — 흔들린 뒤 오히려 정리되니 미뤄 둔 정리를 한다.", " — 털어내는 변수다, 바뀌는 것을 받아들인다."], seed, 1) : pick([" — 일정에 여유만 둔다.", " — 확인 연락 한 번이면 지나간다."], seed, 1);
+    const tail = luck ? pick([" — 방향은 유지, 변경은 보류.", " — 계획을 바꾸지 말고 하루만 지켜본다."], seed, 1) : e.pos === "월지" ? pick([" — 직장·집안의 뿌리가 흔들리는 충, 큰 결정은 미룬다.", " — 생활의 기둥이 건드려지는 날, 변화는 받되 결정은 늦춘다."], seed, 1) : e.ckind === "고지" ? pick([" — 창고가 열리는 충, 꺼낼 것과 지킬 것을 가른다.", " — 묵은 돈·물건·감정이 드러나니 정리하면 남는다."], seed, 1) : g >= 0.3 ? pick([" — 큰 결정은 오늘 확정하지 않는다.", " — 아픈 자리를 맞는 날, 중요한 결정은 내일."], seed, 1) : g <= -0.3 ? pick([" — 흔들린 뒤 오히려 정리되니 미뤄 둔 정리를 한다.", " — 털어내는 변수다, 바뀌는 것을 받아들인다."], seed, 1) : pick([" — 일정에 여유만 둔다.", " — 확인 연락 한 번이면 지나간다."], seed, 1);
     out = fillP(base, e.pos) + tail + (e.tam ? " 합이 붙들어 덜 번진다." : "");
   } else if (t.startsWith("자형")) {
     out = fillP("내 조급함과 자책이 문제를 만든다 — {P} 쪽에서 스스로를 몰아세우지 않는다.", e.pos);
@@ -5209,7 +5318,7 @@ if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => { navigator.serviceWorker.register("./sw.js").catch(() => {}); });
 }
 </script>
-<script>/* 껍데기 UI: 재방문(주소 복사)·선택형 탈출 v1.9.0 */
+<script>/* 껍데기 UI: 재방문(주소 복사)·선택형 탈출 v1.9.1 */
 var DISPLAY_URL = "https://bit.ly/myungun"; // 표시·복사용 주소 — 짧은 주소 생기면 여기만 교체
 (function () {
   var ua = window.__forceUA || navigator.userAgent || "";
@@ -5315,7 +5424,7 @@ var DISPLAY_URL = "https://bit.ly/myungun"; // 표시·복사용 주소 — 짧�
 
   if (document.body) build(); else document.addEventListener("DOMContentLoaded", build);
 })();</script>
-<script>/* 부드러운 설치 안내 v1.9.0 */
+<script>/* 부드러운 설치 안내 v1.9.1 */
 (function () {
   var ua = window.__forceUA || navigator.userAgent || "";
   var standalone = (window.matchMedia && matchMedia("(display-mode: standalone)").matches) || window.navigator.standalone === true;
