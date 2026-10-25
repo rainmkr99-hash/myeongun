@@ -322,7 +322,7 @@ var d=null!=c&&c.hydratedSources||null,e=!1,f="",g=aj;null!==c&&void 0!==c&&(!0=
 function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmountComponentAtNode=function(a){if(!Vd(a))throw Error(m(40));return a._reactRootContainer?(yb(function(){Wd(null,null,a,!1,function(){a._reactRootContainer=null;a[Ja]=null})}),!0):!1};Q.unstable_batchedUpdates=Tf;Q.unstable_renderSubtreeIntoContainer=function(a,b,c,d){if(!Vd(c))throw Error(m(200));if(null==a||void 0===a._reactInternals)throw Error(m(38));return Wd(a,b,c,!1,d)};Q.version="18.3.1-next-f1338f8080-20240426"});
 })();
 </script>
-<script>/* 앱 본체 v1.10.0 — Babel 7.26.4로 빌드 시점 변환(완성본에 Babel 미포함). v1.10.0: 총사주 보강 — 宮(궁위: 네 기둥을 시기·사람의 자리로 읽고 지지 십성 + 일간 기준 십이운성), 煞(원국 신살·공망: 천을귀인·양인·백호·괴강·도화·역마·화개·문창·월덕·천덕·공망), 器에 없는/과다 십성군 진단과 종격 표시, 補에 궁통보감 조후용신 글자. v1.9.1: 실측 보정(사건 우선 — 충·형 급소 완화 하한 0.7, 합 보너스 상한, 귀인·조후 0.5, 삼형 2.0, 충 월령 가중, 지지 복음, 양인운 감점, 격국 운(파격은 항상·상신은 신강만), 상신 합거). v1.9: 궁통보감 조후용신표(10×12)·종격(종아·종재·종관·종왕·종강) 희기 반전·충 종류 차등(왕지/생지/고지)·탐합망충·방합·육합 화기·양인충/백호충 감점·삼합 원국 뿌리 가중·세운병림·대운 천간 합충·교운기·투출. v1.6: 일운 정밀화(천간 관계·천극지충·복음·반합·덕귀인·뿌리 세기·급소 연속 희기·월운 맥락). v1.7: 핵심 3문장 한 줄화(원리 용어 제거, 꼬리표), 분야 상황+행동 압축 및 힘/조심 표시, 총운 압축. v1.8: 정밀화 항목을 월운·년운에도 적용(위치 가중은 기간별), 월운에 년운 맥락 1/4 가산, 월운·년운 핵심 네 줄(리듬: 좋은 날·조심할 날 / 달력: 좋은 달·조심할 달), 분야·총운 압축을 월·년에도 적용 */
+<script>/* 앱 본체 v1.11.0 — Babel 7.26.4로 빌드 시점 변환(완성본에 Babel 미포함). v1.11.0: 대운 맥락 — 대운 기둥을 원국에 대해 같은 규칙(오행 희기·관계·신살·조후·격국)으로 평가한 점수를 년운에 0.35 가산(월운·일운은 년운 맥락을 통해 전달), 교운기는 두 대운 평균, 유년(만 20세 미만) 일지·시지 관계 비중 절반. v1.10.0: 총사주 보강 — 宮(궁위: 네 기둥을 시기·사람의 자리로 읽고 지지 십성 + 일간 기준 십이운성), 煞(원국 신살·공망: 천을귀인·양인·백호·괴강·도화·역마·화개·문창·월덕·천덕·공망), 器에 없는/과다 십성군 진단과 종격 표시, 補에 궁통보감 조후용신 글자. v1.9.1: 실측 보정(사건 우선 — 충·형 급소 완화 하한 0.7, 합 보너스 상한, 귀인·조후 0.5, 삼형 2.0, 충 월령 가중, 지지 복음, 양인운 감점, 격국 운(파격은 항상·상신은 신강만), 상신 합거). v1.9: 궁통보감 조후용신표(10×12)·종격(종아·종재·종관·종왕·종강) 희기 반전·충 종류 차등(왕지/생지/고지)·탐합망충·방합·육합 화기·양인충/백호충 감점·삼합 원국 뿌리 가중·세운병림·대운 천간 합충·교운기·투출. v1.6: 일운 정밀화(천간 관계·천극지충·복음·반합·덕귀인·뿌리 세기·급소 연속 희기·월운 맥락). v1.7: 핵심 3문장 한 줄화(원리 용어 제거, 꼬리표), 분야 상황+행동 압축 및 힘/조심 표시, 총운 압축. v1.8: 정밀화 항목을 월운·년운에도 적용(위치 가중은 기간별), 월운에 년운 맥락 1/4 가산, 월운·년운 핵심 네 줄(리듬: 좋은 날·조심할 날 / 달력: 좋은 달·조심할 달), 분야·총운 압축을 월·년에도 적용 */
 const {
   useState,
   useMemo,
@@ -890,6 +890,9 @@ const YS_HAP_CAP = 1.0; // v1.9.1 합의 기신-묶임 보너스 상한 — 합�
 const W_CHUNG_WOLRYEONG = 0.6; // v1.9.1 충 월령(월지 충) 추가 감점 — 격의 뿌리·직장·부모 궁이 흔들림 (년 1.0 / 월 0.8 / 일 0.5 배)
 const W_BR_BOKEUM = 0.25; // v1.9.1 지지 복음 — 운의 지지가 원국 지지와 같은 글자(월지·일지·시지; 년지는 0.6배): 그 궁의 일이 되풀이·정체
 const W_YANGIN_RUN = 0.3; // v1.9.1 양인운(운의 지지가 일간의 양인) 감점 — 칼날: 수술·사고·쟁재
+const W_DW_CTX = 0.35; // v1.11 대운 맥락 — 대운 기둥을 원국에 대해 같은 규칙(오행 희기·관계·신살·조후·격국)으로 평가한 점수를 년운에 가산(대운은 10년의 바탕). 교운기(대운 교체 전해·당해)는 두 대운의 평균
+const YOUTH_AGE = 20; // v1.11 유년 궁 가중 — 만 20세 미만은 일지·시지(나·배우자·자녀 궁)와의 관계 비중을 낮춤(어린 시절의 운은 부모·집안 궁으로 발현)
+const YOUTH_MUL = 0.5;
 const W_GYEOK_UN = 0.6; // v1.9.1 격국 운(자평진전 순역용) — 운의 천간 십성이 격의 상신이면 +, 파격이면 −
 const GYEOK_UN = {
   정관격: {
@@ -1287,7 +1290,9 @@ function evaluateLuck(kind, luckP, prof, ctx = {}) {
   const allSources = [...sources, [label, lb]];
   const isNatal = pos => natalOnly.some(([p]) => p === pos);
   const POS_W = KIND_POS_W[kind] || DAY_POS_W;
-  const wOf = pos => isNatal(pos) ? fine ? POS_W[pos] || W_NATAL_REL : W_NATAL_REL : W_LUCK_REL; // 운끼리 관계 = 절반 가중, 일운은 위치별 가중
+  const ageAt = ctx.year != null && prof.birthYear ? ctx.year - prof.birthYear : null; // v1.11 유년 궁 가중
+  const youngMul = ageAt !== null && ageAt < YOUTH_AGE ? YOUTH_MUL : 1;
+  const wOf = pos => (isNatal(pos) ? fine ? POS_W[pos] || W_NATAL_REL : W_NATAL_REL : W_LUCK_REL) * (pos === "일지" || pos === "시지" ? youngMul : 1); // 운끼리 관계 = 절반 가중, 일운은 위치별 가중
 
   /* 급소 배율 — 관계가 '원국' 글자를 때릴 때만, 맞은 글자(정기 오행)의 급소 점수로 조정.
      충·형: ×(1+S·g) — 용신 타격은 흉 가중, 기신 타격은 완화(세면 길 전환).
@@ -1418,7 +1423,7 @@ function evaluateLuck(kind, luckP, prof, ctx = {}) {
         e2 = STEM_EL[pl[0]];
       const geuk = (e1 + 2) % 5 === e2 || (e2 + 2) % 5 === e1;
       if (!geuk || (pl[1] + 6) % 12 !== lb) continue;
-      const v = -(pos === "일주" ? W_CHEONGEUK : W_CHEONGEUK * 0.5 * pw);
+      const v = -(pos === "일주" ? W_CHEONGEUK : W_CHEONGEUK * 0.5 * pw) * (pos === "일주" || pos === "시주" ? youngMul : 1);
       score += v;
       addArea(v, AREA_REL.충);
       events.push({
@@ -1958,8 +1963,35 @@ function evaluateLuck(kind, luckP, prof, ctx = {}) {
       d: isBH ? "원국에 잠들어 있던 급한 기운을 이 운이 건드리는 날입니다. 사고·과로·수술수 같은 몸의 문제로 번지기 쉬우니, 서두르는 일정과 위험한 작업만 오늘은 피하세요." : "원국의 칼날 기운을 이 운이 건드리는 날입니다. 평소보다 승부욕과 언성이 오르기 쉬우니, 결정적인 한마디와 무리한 강행만 삼가면 지나갑니다."
     });
   }
+  /* v1.11 대운 맥락 — 대운 기둥을 원국에 대해 같은 규칙으로 평가(관계·신살·조후·격국 포함)한 점수를 년운에 가산.
+     교운기(다음 대운 시작 전해·당해, 또는 현 대운 시작 당해)는 두 대운 점수의 평균 — 바뀌는 기운이 미리·늦게 섞여 든다 */
+  let dwCtx = 0;
+  if (kind === "year" && ctx.dwP && W_DW_CTX) {
+    const dvOf = p => {
+      const key = `dwev|${profKey(prof)}|${idx60(p)}|${youngMul}`;
+      let dv = _distCache.get(key);
+      if (dv === undefined) dv = cachePut(key, evaluateLuck("year", p, prof, {
+        label: "대운",
+        year: ctx.year
+      }).score);
+      return dv;
+    };
+    let dv = dvOf(ctx.dwP.p);
+    if (ctx.year != null && prof.dw && prof.dw.list) {
+      const L = prof.dw.list,
+        i = L.indexOf(ctx.dwP);
+      if (i >= 0) {
+        const next = L[i + 1],
+          prev = L[i - 1];
+        if (next && ctx.year >= next.from.y - 1) dv = (dv + dvOf(next.p)) / 2;else if (prev && ctx.year <= ctx.dwP.from.y) dv = (dv + dvOf(prev.p)) / 2;
+      }
+    }
+    dwCtx = W_DW_CTX * dv;
+    score += dwCtx;
+  }
   return {
     score,
+    dwCtx,
     areas,
     events,
     samhyung,
@@ -2159,6 +2191,7 @@ function dayDist(prof, Y) {
       dwP: dwAtDate(prof.dw, yy, mm, dd),
       seun: p.yearP,
       wolun: p.monthP,
+      year: Y,
       label: "일운"
     });
     const mOrd = (p.monthP[1] - 2 + 12) % 12 + 1;
@@ -2194,6 +2227,7 @@ function monthEvalsOfYear(prof, Y) {
     const ev = evaluateLuck("month", [mStem, mBranch], prof, {
       dwP,
       seun: [yStem, yIdx % 12],
+      year: Y,
       label: "월운"
     });
     list.push({
@@ -2277,6 +2311,7 @@ function analyzeDay(prof, y, m, d) {
     dwP: dwUsed,
     seun: p.yearP,
     wolun: p.monthP,
+    year: Y,
     label: "일운"
   });
   const mOrd = (p.monthP[1] - 2 + 12) % 12 + 1;
@@ -5430,7 +5465,7 @@ function SajuFortune() {
     className: "sj-foldbody"
   }, /*#__PURE__*/React.createElement("p", {
     className: "sj-text"
-  }, "\uC6D0\uC810\uC218 ", analysis.score.toFixed(2), analysis.monthCtx != null ? ` (일진 ${analysis.rawScore.toFixed(2)} + 월운 맥락 ${(W_MONTH_CTX * analysis.monthCtx).toFixed(2)})` : analysis.yearCtx != null ? ` (월운 ${analysis.rawScore.toFixed(2)} + 년운 맥락 ${(W_YEAR_CTX * analysis.yearCtx).toFixed(2)})` : "", analysis.pct != null ? ` · 분포 상위 ${Math.max(1, Math.round(analysis.pct * 100))}%` : "", analysis.position ? ` · 평생 ${analysis.position.rank}/${analysis.position.total}번째` : "", " · 영역점수 — ", AREAS.map(k => `${AREA_KO[k]} ${analysis.areas[k] >= 0 ? "+" : ""}${analysis.areas[k].toFixed(2)}`).join(" / ")), /*#__PURE__*/React.createElement("p", {
+  }, "\uC6D0\uC810\uC218 ", analysis.score.toFixed(2), analysis.monthCtx != null ? ` (일진 ${analysis.rawScore.toFixed(2)} + 월운 맥락 ${(W_MONTH_CTX * analysis.monthCtx).toFixed(2)})` : analysis.yearCtx != null ? ` (월운 ${analysis.rawScore.toFixed(2)} + 년운 맥락 ${(W_YEAR_CTX * analysis.yearCtx).toFixed(2)})` : analysis.dwCtx ? ` (세운 ${(analysis.score - analysis.dwCtx).toFixed(2)} + 대운 맥락 ${analysis.dwCtx.toFixed(2)})` : "", analysis.pct != null ? ` · 분포 상위 ${Math.max(1, Math.round(analysis.pct * 100))}%` : "", analysis.position ? ` · 평생 ${analysis.position.rank}/${analysis.position.total}번째` : "", " · 영역점수 — ", AREAS.map(k => `${AREA_KO[k]} ${analysis.areas[k] >= 0 ? "+" : ""}${analysis.areas[k].toFixed(2)}`).join(" / ")), /*#__PURE__*/React.createElement("p", {
     className: "sj-text"
   }, /*#__PURE__*/React.createElement("b", null, "\uAE09\uC18C \uC9C0\uB3C4"), " ", /*#__PURE__*/React.createElement("span", {
     className: "bs"
@@ -5453,7 +5488,7 @@ if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => { navigator.serviceWorker.register("./sw.js").catch(() => {}); });
 }
 </script>
-<script>/* 껍데기 UI: 재방문(주소 복사)·선택형 탈출 v1.10.0 */
+<script>/* 껍데기 UI: 재방문(주소 복사)·선택형 탈출 v1.11.0 */
 var DISPLAY_URL = "https://bit.ly/myungun"; // 표시·복사용 주소 — 짧은 주소 생기면 여기만 교체
 (function () {
   var ua = window.__forceUA || navigator.userAgent || "";
@@ -5559,7 +5594,7 @@ var DISPLAY_URL = "https://bit.ly/myungun"; // 표시·복사용 주소 — 짧�
 
   if (document.body) build(); else document.addEventListener("DOMContentLoaded", build);
 })();</script>
-<script>/* 부드러운 설치 안내 v1.10.0 */
+<script>/* 부드러운 설치 안내 v1.11.0 */
 (function () {
   var ua = window.__forceUA || navigator.userAgent || "";
   var standalone = (window.matchMedia && matchMedia("(display-mode: standalone)").matches) || window.navigator.standalone === true;
