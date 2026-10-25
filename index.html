@@ -322,7 +322,7 @@ var d=null!=c&&c.hydratedSources||null,e=!1,f="",g=aj;null!==c&&void 0!==c&&(!0=
 function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmountComponentAtNode=function(a){if(!Vd(a))throw Error(m(40));return a._reactRootContainer?(yb(function(){Wd(null,null,a,!1,function(){a._reactRootContainer=null;a[Ja]=null})}),!0):!1};Q.unstable_batchedUpdates=Tf;Q.unstable_renderSubtreeIntoContainer=function(a,b,c,d){if(!Vd(c))throw Error(m(200));if(null==a||void 0===a._reactInternals)throw Error(m(38));return Wd(a,b,c,!1,d)};Q.version="18.3.1-next-f1338f8080-20240426"});
 })();
 </script>
-<script>/* 앱 본체 v1.6.0 — Babel 7.26.4로 빌드 시점 변환(완성본에 Babel 미포함). v1.6: 일운 정밀화(천간 관계·천극지충·복음·반합·덕귀인·뿌리 세기·급소 연속 희기·월운 맥락) + 오늘의 핵심 3문장 + 분야 문장 다양화 */
+<script>/* 앱 본체 v1.6.1 — Babel 7.26.4로 빌드 시점 변환(완성본에 Babel 미포함). v1.6: 일운 정밀화(천간 관계·천극지충·복음·반합·덕귀인·뿌리 세기·급소 연속 희기·월운 맥락) + 오늘의 핵심 3문장 + 분야 문장 다양화 */
 const {
   useState,
   useMemo,
@@ -4581,7 +4581,7 @@ function SajuFortune() {
     className: "sj-foldbody"
   }, /*#__PURE__*/React.createElement("p", {
     className: "sj-text"
-  }, "\uC6D0\uC810\uC218 ", analysis.score.toFixed(2), analysis.pct != null ? ` · 분포 상위 ${Math.max(1, Math.round(analysis.pct * 100))}%` : "", analysis.position ? ` · 평생 ${analysis.position.rank}/${analysis.position.total}번째` : "", " · 영역점수 — ", AREAS.map(k => `${AREA_KO[k]} ${analysis.areas[k] >= 0 ? "+" : ""}${analysis.areas[k].toFixed(2)}`).join(" / ")), /*#__PURE__*/React.createElement("p", {
+  }, "\uC6D0\uC810\uC218 ", analysis.score.toFixed(2), analysis.monthCtx != null ? ` (일진 ${analysis.rawScore.toFixed(2)} + 월운 맥락 ${(W_MONTH_CTX * analysis.monthCtx).toFixed(2)})` : "", analysis.pct != null ? ` · 분포 상위 ${Math.max(1, Math.round(analysis.pct * 100))}%` : "", analysis.position ? ` · 평생 ${analysis.position.rank}/${analysis.position.total}번째` : "", " · 영역점수 — ", AREAS.map(k => `${AREA_KO[k]} ${analysis.areas[k] >= 0 ? "+" : ""}${analysis.areas[k].toFixed(2)}`).join(" / ")), /*#__PURE__*/React.createElement("p", {
     className: "sj-text"
   }, /*#__PURE__*/React.createElement("b", null, "\uAE09\uC18C \uC9C0\uB3C4"), " ", /*#__PURE__*/React.createElement("span", {
     className: "bs"
@@ -4604,7 +4604,7 @@ if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => { navigator.serviceWorker.register("./sw.js").catch(() => {}); });
 }
 </script>
-<script>/* 껍데기 UI: 재방문(주소 복사)·선택형 탈출 v1.6.0 */
+<script>/* 껍데기 UI: 재방문(주소 복사)·선택형 탈출 v1.6.1 */
 var DISPLAY_URL = "https://bit.ly/myungun"; // 표시·복사용 주소 — 짧은 주소 생기면 여기만 교체
 (function () {
   var ua = window.__forceUA || navigator.userAgent || "";
@@ -4710,7 +4710,7 @@ var DISPLAY_URL = "https://bit.ly/myungun"; // 표시·복사용 주소 — 짧�
 
   if (document.body) build(); else document.addEventListener("DOMContentLoaded", build);
 })();</script>
-<script>/* 부드러운 설치 안내 v1.6.0 */
+<script>/* 부드러운 설치 안내 v1.6.1 */
 (function () {
   var ua = window.__forceUA || navigator.userAgent || "";
   var standalone = (window.matchMedia && matchMedia("(display-mode: standalone)").matches) || window.navigator.standalone === true;
