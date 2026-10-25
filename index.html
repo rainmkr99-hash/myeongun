@@ -322,7 +322,7 @@ var d=null!=c&&c.hydratedSources||null,e=!1,f="",g=aj;null!==c&&void 0!==c&&(!0=
 function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmountComponentAtNode=function(a){if(!Vd(a))throw Error(m(40));return a._reactRootContainer?(yb(function(){Wd(null,null,a,!1,function(){a._reactRootContainer=null;a[Ja]=null})}),!0):!1};Q.unstable_batchedUpdates=Tf;Q.unstable_renderSubtreeIntoContainer=function(a,b,c,d){if(!Vd(c))throw Error(m(200));if(null==a||void 0===a._reactInternals)throw Error(m(38));return Wd(a,b,c,!1,d)};Q.version="18.3.1-next-f1338f8080-20240426"});
 })();
 </script>
-<script>/* 앱 본체 v1.8.0 — Babel 7.26.4로 빌드 시점 변환(완성본에 Babel 미포함). v1.6: 일운 정밀화(천간 관계·천극지충·복음·반합·덕귀인·뿌리 세기·급소 연속 희기·월운 맥락). v1.7: 핵심 3문장 한 줄화(원리 용어 제거, 꼬리표), 분야 상황+행동 압축 및 힘/조심 표시, 총운 압축. v1.8: 정밀화 항목을 월운·년운에도 적용(위치 가중은 기간별), 월운에 년운 맥락 1/4 가산, 월운·년운 핵심 네 줄(리듬: 좋은 날·조심할 날 / 달력: 좋은 달·조심할 달), 분야·총운 압축을 월·년에도 적용 */
+<script>/* 앱 본체 v1.9.0 — Babel 7.26.4로 빌드 시점 변환(완성본에 Babel 미포함). v1.9: 궁통보감 조후용신표(10×12)·종격(종아·종재·종관·종왕·종강) 희기 반전·충 종류 차등(왕지/생지/고지)·탐합망충·방합·육합 화기·양인충/백호충 감점·삼합 원국 뿌리 가중·세운병림·대운 천간 합충·교운기·투출. v1.6: 일운 정밀화(천간 관계·천극지충·복음·반합·덕귀인·뿌리 세기·급소 연속 희기·월운 맥락). v1.7: 핵심 3문장 한 줄화(원리 용어 제거, 꼬리표), 분야 상황+행동 압축 및 힘/조심 표시, 총운 압축. v1.8: 정밀화 항목을 월운·년운에도 적용(위치 가중은 기간별), 월운에 년운 맥락 1/4 가산, 월운·년운 핵심 네 줄(리듬: 좋은 날·조심할 날 / 달력: 좋은 달·조심할 달), 분야·총운 압축을 월·년에도 적용 */
 const {
   useState,
   useMemo,
@@ -741,11 +741,85 @@ const GWIIN = [[1, 7], [0, 8], [11, 9], [11, 9], [1, 7], [0, 8], [1, 7], [2, 6],
 const JANGSAENG = [11, 6, 2, 9, 2, 9, 5, 0, 8, 3];
 const STAGE_NAMES = ["장생", "목욕", "관대", "건록", "제왕", "쇠", "병", "사", "묘", "절", "태", "양"];
 const STAGE_GLOSS = ["새 기운이 움트는 때", "변화로 들뜨기 쉬운 때", "의욕이 차오르는 때", "실력이 안정된 때", "기세가 정점인 때", "한 템포 쉬어 갈 때", "컨디션 관리가 필요한 때", "정리와 마무리의 때", "안으로 갈무리하는 때", "전환을 준비하는 때", "새 계획이 잉태되는 때", "힘을 기르는 때"];
-function rateEl(el, dayEl, strength) {
-  if (strength === "중화") return 0;
+function rateEl(el, dayEl, strength, frame) {
   const rel = ((el - dayEl) % 5 + 5) % 5;
+  if (frame && frame.type !== "정격") {
+    // v1.9 종격(從格): 희기 반전 — 십성군(비겁·식상·재성·관성·인성) 순서의 희기표
+    return FRAME_RATE[frame.type][rel];
+  }
+  if (strength === "중화") return 0;
   if (strength === "신약") return rel === 0 || rel === 4 ? 1 : rel === 2 || rel === 3 ? -1 : 0;
   return rel === 0 || rel === 4 ? -1 : 1;
+}
+
+/* ─── v1.9 종격(從格) 판정 — 보수적 기준: 극신약(부조율 ≤ 0.12)이고 비겁·인성이 지지 정기·천간 어디에도 없으면 종약격(식상·재·관 중 최강을 따름),
+   극신강(≥ 0.88)이고 재·관이 지지 정기·천간에 없으면 종왕(비겁 최강)/종강(인성 최강). 그 외는 정격 ─── */
+function frameOf(prof) {
+  const key = "frame|" + profKeyBase(prof);
+  if (_distCache.has(key)) return _distCache.get(key);
+  const natal = prof.natal,
+    dayEl = STEM_EL[prof.dayStem];
+  const rel = el => ((el - dayEl) % 5 + 5) % 5;
+  const stems = [natal.yearP[0], natal.monthP[0]];
+  if (natal.timeP) stems.push(natal.timeP[0]);
+  const brs = [natal.yearP[1], natal.monthP[1], natal.dayP[1]];
+  if (natal.timeP) brs.push(natal.timeP[1]);
+  const rels = [...stems.map(x => rel(STEM_EL[x])), ...brs.map(b => rel(STEM_EL[BRANCH_MAIN[b]]))];
+  const dist = elementDist(natal);
+  let out = {
+    type: "정격",
+    follow: null
+  };
+  if (prof.strengthPct <= 0.12 && !rels.some(r => r === 0 || r === 4)) {
+    const cand = [1, 2, 3].map(r => [r, dist[(dayEl + r) % 5]]).sort((a, b) => b[1] - a[1])[0];
+    out = {
+      type: ["", "종아", "종재", "종관"][cand[0]],
+      follow: cand[0]
+    };
+  } else if (prof.strengthPct >= 0.88 && !rels.some(r => r === 2 || r === 3)) {
+    out = {
+      type: dist[dayEl] >= dist[(dayEl + 4) % 5] ? "종왕" : "종강",
+      follow: null
+    };
+  }
+  _distCache.set(key, out);
+  return out;
+}
+const FRAME_RATE = {
+  종아: [0.3, 1, 0.7, -0.5, -1],
+  // 식상을 따름: 식상·재성 희, 인성(극 식상)·관성 기, 비겁은 식상을 낳아 허용
+  종재: [-1, 0.7, 1, 0.5, -0.7],
+  // 재성을 따름: 재·식상(생재)·관(재가 낳음) 희, 비겁(쟁재)·인성 기
+  종관: [-1, -1, 0.7, 1, 0.3],
+  // 관살을 따름: 관·재(생관) 희, 인성은 관인상생으로 소폭 허용, 비겁·식상(극관) 기
+  종왕: [1, 0.5, -1, -1, 0.7],
+  // 비겁 극왕: 비겁·인성 희, 식상 설기 허용, 재·관 기
+  종강: [0.7, -0.3, -1, -0.7, 1] // 인성 극왕: 인성·비겁 희, 재·관·식상 기
+};
+const FRAME_KO = {
+  정격: "",
+  종아: "종아격(從兒格) — 식상을 따르는 명식: 표현·활동이 희신, 비겁·인성이 기신",
+  종재: "종재격(從財格) — 재성을 따르는 명식: 재물·활동이 희신, 비겁·인성이 기신",
+  종관: "종살격(從殺格) — 관성을 따르는 명식: 책임·조직이 희신, 비겁·인성이 기신",
+  종왕: "종왕격(從旺格) — 비겁이 극왕한 명식: 비겁·인성이 희신, 재·관이 기신",
+  종강: "종강격(從强格) — 인성이 극왕한 명식: 인성·비겁이 희신, 재·관이 기신"
+};
+
+/* ─── v1.9 조후용신표(궁통보감) — 일간 × 월지 → 조후용신 천간(앞일수록 주용신). 억부와 별도로 계절의 한난조습을 고르는 글자 ─── */
+const JOHU_TABLE = {
+  0: [[3, 6, 2], [3, 6, 2], [2, 9], [6, 2, 4, 5], [6, 3, 8], [9, 3, 6], [9, 3, 6], [9, 3, 6], [6, 3, 8], [6, 3, 2], [6, 0, 3, 8, 9], [6, 3, 4, 2]],
+  1: [[2], [2], [2, 9], [2, 9], [9, 2, 4], [9], [9, 2], [9, 2], [2, 9, 5], [9, 2, 3], [9, 7], [2, 4]],
+  2: [[8, 4, 5], [8, 0], [8, 6], [8, 5], [8, 0], [8, 6, 9], [8, 6], [8, 6], [8, 4], [8, 9], [0, 8], [0, 4, 6, 8]],
+  3: [[0, 6], [0, 6], [0, 6], [6, 0], [0, 6], [0, 6], [8, 6, 9], [0, 8, 6], [0, 6, 2, 4], [0, 6, 2, 4], [0, 6, 4], [0, 6]],
+  4: [[2, 0], [2, 0], [2, 0, 9], [2, 0, 9], [0, 2, 9], [0, 2, 9], [8, 0, 2], [9, 2, 0], [2, 9, 0], [2, 9], [0, 2, 9], [0, 2]],
+  5: [[2, 0, 4], [2, 0, 4], [2, 6, 0], [0, 9, 2], [2, 9, 0], [9, 2], [9, 2], [9, 2], [2, 9], [2, 9], [0, 2, 9], [2, 0, 4]],
+  6: [[3, 0, 2], [2, 3, 0], [4, 0, 8, 2, 3], [3, 0, 6, 2], [0, 3, 8, 9], [8, 4, 2, 3], [8, 9], [3, 0], [3, 0], [3, 0, 2], [0, 8], [3, 2]],
+  7: [[2, 4, 8, 0], [2, 8, 4, 5], [5, 8, 6], [8, 0], [8, 0], [8, 0, 9], [8, 5, 9], [8, 6, 0], [8, 0, 4], [8, 0], [8, 0], [8, 2]],
+  8: [[4, 2], [2, 3, 0], [6, 2, 4], [4, 7, 6], [0, 6], [8, 7, 6, 9], [9, 6, 7], [7, 0], [4, 3], [0, 6], [0, 2], [4, 2, 6]],
+  9: [[2, 7], [2, 3], [7, 2], [6, 7], [2, 7, 0], [7], [6, 7, 8, 9], [6, 7, 8, 9], [3], [7, 2], [7, 0, 8, 9], [6, 7, 4, 3]]
+}; // 키: 일간 index(甲0..癸9), 값: 월지 index(子0..亥11) 순서의 배열, 원소는 천간 index
+function johuStems(prof) {
+  return JOHU_TABLE[prof.dayStem][prof.natal.monthP[1]] || [];
 }
 
 /* ─── v6.1 판정 상수: 모든 비율·컷·가중치는 여기서만 조정 (난수 금지, 전부 결정적) ─── */
@@ -801,6 +875,57 @@ const KIND_POS_W = {
   day: DAY_POS_W,
   month: MONTH_POS_W,
   year: YEAR_POS_W
+};
+const CHUNG_KIND_MUL = {
+  왕지: 1.2,
+  생지: 1.0,
+  고지: 0.7
+}; // v1.9 충의 종류: 子午卯酉(왕지충: 정면 충돌) > 寅申巳亥(생지충: 이동·변동) > 辰戌丑未(고지충·붕충: 창고가 열림)
+const W_TAMHAP = 0.4; // v1.9 탐합망충: 맞는 원국 글자가 원국 안에서 육합에 묶여 있으면 충 감점 ×(1−0.4)
+const W_TAMHAP_SELF = 0.3; // 운의 글자가 다른 원국 글자와 육합이면(합을 탐해 충을 잊음) 충 감점 ×(1−0.3)
+const W_BANGHAP = 0.8; // v1.9 방합(寅卯辰·巳午未·申酉戌·亥子丑) 완성 — 계절국
+const W_HAP_EL = 0.3; // v1.9 육합의 화기(化氣) 오행 희기 가산
+const W_YANGIN_CHUNG = 0.5; // v1.9 양인충(원국 양인 지지를 운이 충) 감점 — 고전이 가장 무겁게 보는 신호 중 하나
+const W_BAEKHO_CHUNG = 0.3; // v1.9 원국 백호 기둥 충 감점
+const W_BYEONGRIM = 0.4; // v1.9 세운병림(세운 간지 = 대운 간지) 감점(변동성)
+const W_DW_STEM_CHUNG = 0.25; // v1.9 대운 천간 ↔ 세운 천간 충
+const W_GYOUN = 0.2; // v1.9 교운기(대운 교체 전후 1년) 감점(들쭉날쭉)
+const HAP_EL = {
+  0: 2,
+  1: 2,
+  2: 0,
+  11: 0,
+  3: 1,
+  10: 1,
+  4: 3,
+  9: 3,
+  5: 4,
+  8: 4,
+  6: 2,
+  7: 2
+}; // 육합의 화기: 子丑→土 寅亥→木 卯戌→火 辰酉→金 巳申→水 午未→土(火)
+const BANGHAP_GROUPS = [{
+  set: [2, 3, 4],
+  el: 0,
+  name: "寅卯辰 木方"
+}, {
+  set: [5, 6, 7],
+  el: 1,
+  name: "巳午未 火方"
+}, {
+  set: [8, 9, 10],
+  el: 3,
+  name: "申酉戌 金方"
+}, {
+  set: [11, 0, 1],
+  el: 4,
+  name: "亥子丑 水方"
+}];
+const POS_MEAN_SHORT = {
+  년지: "윗사람·바깥일",
+  월지: "직장·집안",
+  일지: "배우자·내 자리",
+  시지: "자녀·아랫사람"
 };
 const W_YEAR_CTX = 0.25; // 년운 맥락 — 그 해 세운 원점수의 1/4을 월운 원점수에 가산 (약하게 섞기, v1.8)
 const W_DAY_YS = 0.5; // 급소 지도(용신 4법 합의, 연속값)를 운의 오행 희기에 가산 — 중화 명식의 동점 해소 + 조후·격국·통관 반영 (v1.8부터 일·월·년 공통)
@@ -1004,6 +1129,8 @@ function evaluateLuck(kind, luckP, prof, ctx = {}) {
   };
   const relIdx = el => ((el - dayEl) % 5 + 5) % 5;
   let score = 0;
+  const frame = frameOf(prof); // v1.9 종격 반영
+  const rateF = el => rateEl(el, dayEl, strength, frame);
 
   /* v1.6 일운 정밀화 — 일운(kind==="day")에서만 켜지는 항목들 */
   const dayMode = kind === "day"; // 덕귀인·문창(일진 전용 길성)에만 쓰임
@@ -1018,9 +1145,9 @@ function evaluateLuck(kind, luckP, prof, ctx = {}) {
   const rootMult = fine ? ROOT_MULT_MIN + (ROOT_MULT_MAX - ROOT_MULT_MIN) * root : 1;
 
   // ① 오행 희기 — 천간 정수 + 지지 지장간 분율(연속값: 원칙적 동점 해소)
-  const stemAff = W_STEM_EL * rateEl(STEM_EL[ls], dayEl, strength) * rootMult;
+  const stemAff = W_STEM_EL * rateF(STEM_EL[ls]) * rootMult;
   let brAff = 0;
-  for (const [hs, f] of JIJANGGAN[lb]) brAff += f / 30 * rateEl(STEM_EL[hs], dayEl, strength);
+  for (const [hs, f] of JIJANGGAN[lb]) brAff += f / 30 * rateF(STEM_EL[hs]);
   brAff *= W_BRANCH_EL;
   score += stemAff + brAff;
   addArea(stemAff, AREA_BY_RELIDX[relIdx(STEM_EL[ls])]);
@@ -1036,7 +1163,7 @@ function evaluateLuck(kind, luckP, prof, ctx = {}) {
     addArea(ysStem, AREA_BY_RELIDX[relIdx(STEM_EL[ls])]);
     addArea(ysBr, AREA_BY_RELIDX[relIdx(STEM_EL[BRANCH_MAIN[lb]])]);
   }
-  const favor = el => Math.max(-1, Math.min(1, rateEl(el, dayEl, strength) + (fine ? ysD[el] : 0))); // 억부 + 급소 합성 희기(반합·덕귀인 문구용)
+  const favor = el => Math.max(-1, Math.min(1, rateF(el) + (fine ? ysD[el] : 0))); // 억부 + 급소 합성 희기(반합·덕귀인 문구용)
 
   // ② 십이운성 미세 가중 — 억부 연속 강도(부조율 기반, 신약 + / 신강 −)와 곱
   const js = JANGSAENG[dayStem];
@@ -1049,8 +1176,8 @@ function evaluateLuck(kind, luckP, prof, ctx = {}) {
   // ③ 년운 전용 — 대운 간지 자체의 희기(10년 물결)
   if (kind === "year" && ctx.dwP) {
     const [ds, db] = ctx.dwP.p;
-    let dwAff = rateEl(STEM_EL[ds], dayEl, strength);
-    for (const [hs, f] of JIJANGGAN[db]) dwAff += f / 30 * rateEl(STEM_EL[hs], dayEl, strength);
+    let dwAff = rateF(STEM_EL[ds]);
+    for (const [hs, f] of JIJANGGAN[db]) dwAff += f / 30 * rateF(STEM_EL[hs]);
     dwAff *= W_DW_EL / 2; // 천간(±1)·지지(±1) 합을 평균(÷2)한 뒤 W_DW_EL 적용
     score += dwAff;
     addArea(dwAff, AREA_BY_RELIDX[relIdx(STEM_EL[ds])]);
@@ -1246,6 +1373,93 @@ function evaluateLuck(kind, luckP, prof, ctx = {}) {
     }
   }
 
+  /* ─── v1.9 세운병림·대운 천간 관계 (년운 전용) ─── */
+  if (kind === "year" && ctx.dwP) {
+    const [ds, db] = ctx.dwP.p;
+    if (idx60(luckP) === idx60(ctx.dwP.p)) {
+      const v = -W_BYEONGRIM;
+      score += v;
+      addArea(v, {
+        doc: 0.3,
+        money: 0.2,
+        rel: 0.2,
+        body: 0.3
+      });
+      events.push({
+        t: "세운병림(歲運竝臨)",
+        w: 1.2,
+        sc: v,
+        act: "10년의 주제가 올해 한꺼번에 드러나는 해 — 큰 결정은 상반기에 몰지 마세요",
+        basis: `대운 ${STEMS[ds]}${BRANCHES[db]} = 세운 ${STEMS[ls]}${BRANCHES[lb]}`,
+        d: "대운과 세운이 같은 간지로 겹치는 해입니다. 10년 흐름의 주제가 이 해에 한꺼번에 드러나 변동 폭이 커지니, 길한 대운이면 크게 열리고 흉한 대운이면 크게 흔들립니다. 어느 쪽이든 변화의 해로 보고 큰 결정은 분산하세요."
+      });
+    } else if (STEM_CHUNG_PAIRS.has(`${ls}-${ds}`)) {
+      const v = -W_DW_STEM_CHUNG;
+      score += v;
+      addArea(v, {
+        doc: 0.5,
+        rel: 0.5
+      });
+      events.push({
+        t: "대운 천간충",
+        w: 0.8,
+        sc: v,
+        act: "큰 흐름과 올해가 부딪칩니다 — 10년 계획을 올해 뒤집지 마세요",
+        basis: `대운 천간 ${STEMS[ds]} ↔ 세운 천간 ${STEMS[ls]}`,
+        d: "대운의 천간과 세운의 천간이 정면으로 칩니다. 10년의 큰 방향과 이 해의 기운이 어긋나 결정이 번복되기 쉬우니, 큰 방향은 유지하고 세부만 조정하세요."
+      });
+    } else if (Math.abs(ls - ds) === 5) {
+      events.push({
+        t: "대운 천간합",
+        w: 0.5,
+        sc: 0,
+        act: "큰 흐름과 올해가 손을 잡습니다 — 다만 묶이는 쪽 일은 더디게 갑니다",
+        basis: `대운 천간 ${STEMS[ds]} + 세운 천간 ${STEMS[ls]} 간합`,
+        d: "대운의 천간과 세운의 천간이 합을 이룹니다. 큰 흐름과 이 해가 한 방향으로 묶여 안정되지만, 묶인 글자가 맡은 일은 진도가 더딜 수 있습니다."
+      });
+    }
+  }
+  /* ─── v1.9 교운기(交運期) — 대운이 바뀌는 해와 그 전후 1년 (년운 전용, 분포에도 동일 적용) ─── */
+  if (kind === "year" && ctx.year != null && prof.dw && prof.dw.list) {
+    const gy = prof.dw.list.find(x => Math.abs(x.from.y - ctx.year) <= 1 && x.from.y >= prof.birthYear + 1);
+    if (gy) {
+      const v = -W_GYOUN;
+      score += v;
+      addArea(v, {
+        doc: 0.5,
+        body: 0.5
+      });
+      events.push({
+        t: "교운기(交運期)",
+        w: 0.7,
+        sc: v,
+        act: "환경·역할이 바뀌는 길목 — 큰 결정은 새 대운이 자리 잡은 뒤로",
+        basis: `대운 ${STEMS[gy.p[0]]}${BRANCHES[gy.p[1]]} 교운 ${gy.from.y}.${String(gy.from.m).padStart(2, "0")} 전후`,
+        d: "대운이 바뀌는 길목의 해입니다. 사는 곳·하는 일·곁의 사람이 바뀌기 쉽고 기운이 들쭉날쭉하니, 이 해의 성적으로 자신을 판정하지 말고 큰 결정은 새 대운이 자리 잡은 뒤로 미루세요."
+      });
+    }
+  }
+  /* ─── v1.9 투출(透出) — 운의 천간이 원국 지지에 숨은 정기(천간에는 없던 글자)와 같을 때: 숨어 있던 것이 드러난다 (참고, 무점수) ─── */
+  if (fine) {
+    const natalStemSet = new Set([natal.yearP[0], natal.monthP[0], dayStem].concat(natal.timeP ? [natal.timeP[0]] : []));
+    if (!natalStemSet.has(ls)) {
+      const hit = natalOnly.find(([, b]) => BRANCH_MAIN[b] === ls);
+      if (hit) {
+        const tg = tenGod(dayStem, ls);
+        events.push({
+          t: "투출(透出)",
+          w: 0.5,
+          sc: 0,
+          pos: hit[0],
+          tg,
+          act: `숨어 있던 ${tg}(${POS_MEAN_SHORT[hit[0]] || hit[0]}) 쪽 일이 겉으로 드러납니다 — 미리 정리해 두세요`,
+          basis: `${hit[0]} ${BRANCHES[hit[1]]}의 정기 ${STEMS[ls]}(${tg}) = ${label} 천간`,
+          d: `원국 ${hit[0]} ${BRANCHES[hit[1]]} 속에 숨어 있던 ${STEMS[ls]}(${tg})이 ${label}의 천간으로 드러납니다. 잠재돼 있던 ${tg} 쪽 사안(사람·일·돈)이 수면 위로 올라오는 시기입니다.`
+        });
+      }
+    }
+  }
+
   /* 삼형(三刑) — 원국·대운·세운·월운·이 운의 지지를 모두 모아 완성 검사.
      발동 조건: 이 운의 글자가 형에 직접 참여.
      희소성 2단계(A/B): 세 글자 중 유동층(세운·월운·일운)이 공급한 글자가
@@ -1295,11 +1509,18 @@ function evaluateLuck(kind, luckP, prof, ctx = {}) {
     if ((b + 6) % 12 === lb) {
       if (!inFired) {
         // 삼형 완성에 이미 포함된 충은 중복 감점 금지
-        const ya = isNatal(pos) ? ysAdjust(-(W_CHUNG * wOf(pos)), b, "충", pos) : {
-          v: -(W_CHUNG * wOf(pos)),
+        // v1.9 충의 종류(왕지·생지·고지)와 탐합망충(합에 묶인 글자는 충을 덜 받는다)
+        const ckind = [0, 3, 6, 9].includes(lb) ? "왕지" : [2, 5, 8, 11].includes(lb) ? "생지" : "고지";
+        const natalHap = isNatal(pos) && natalOnly.some(([p2, b2]) => p2 !== pos && YUKHAP_PAIR[b] === b2);
+        const selfHap = natalOnly.some(([p2, b2]) => p2 !== pos && YUKHAP_PAIR[lb] === b2);
+        const tam = (natalHap ? 1 - W_TAMHAP : 1) * (selfHap ? 1 - W_TAMHAP_SELF : 1);
+        const baseChung = -(W_CHUNG * wOf(pos) * CHUNG_KIND_MUL[ckind] * tam);
+        const ya = isNatal(pos) ? ysAdjust(baseChung, b, "충", pos) : {
+          v: baseChung,
           tag: "",
           g: 0
         };
+        const tamTag = natalHap || selfHap ? " · 합이 충을 붙듦(탐합망충)" : "";
         score += ya.v;
         addArea(ya.v, AREA_REL.충);
         events.push({
@@ -1309,7 +1530,9 @@ function evaluateLuck(kind, luckP, prof, ctx = {}) {
           pos,
           b,
           g: ya.g,
-          basis: basis + ya.tag,
+          ckind,
+          tam: natalHap || selfHap,
+          basis: basis + ya.tag + ` · ${ckind}충` + tamTag,
           act: pos === "일지" ? "이사·이직·계약 같은 큰 결정은 두 번 점검하고 나눠 진행하세요" : pos === "월지" ? "직장·집안의 변화 소식엔 다음 계획부터 세우세요" : pos === "대운" ? "매매·이직·개업 같은 굵직한 결정은 이 시기를 피하세요" : pos === "세운" ? "연간 계획은 유지하되 무리한 변경은 피하세요" : pos === "월운" ? "잡아 둔 일정에 확인 연락을 한 번 더 하세요" : "약속과 일정에 여유 시간을 두세요",
           d: pos === "일지" ? "내 자리(거처·배우자·일상)가 흔들리는 변동수이니, 이사·이직·계약 같은 큰 결정은 두 번 점검하고, 가능하면 시기를 나눠서 진행하세요." : pos === "월지" ? "직장·가정 환경에 변화의 기류가 생기는 자리이니, 변화 자체를 막기보다 변화 이후의 계획을 미리 세워 두세요." : pos === "대운" ? "10년의 큰 흐름과 이 시기의 기운이 정면으로 부딪치는 모양이라 변동성이 큽니다. 굵직한 결정(매매·이직·개업)은 이 시기를 피해 잡는 것이 안전합니다." : pos === "세운" ? "올해의 큰 흐름과 이 시기의 기운이 부딪칩니다. 연간 계획과 지금의 선택이 어긋나기 쉬우니, 큰 방향은 유지하되 무리한 변경은 피하세요." : pos === "월운" ? "이달의 흐름과 오늘의 기운이 부딪칩니다. 이달에 잡아 둔 일정에 오늘 변수가 생기기 쉬우니, 확인 연락을 한 번 더 하세요." : "주변 관계나 일정에 작은 변동이 생기는 정도이니, 약속과 일정에 여유 시간을 두면 충분합니다."
         });
@@ -1323,6 +1546,11 @@ function evaluateLuck(kind, luckP, prof, ctx = {}) {
       };
       score += ya.v;
       addArea(ya.v, AREA_REL.육합);
+      // v1.9 육합의 화기 — 합해서 생기는 오행의 희기를 작게 더한다
+      const hapEl = HAP_EL[lb];
+      const hv = W_HAP_EL * favor(hapEl) * wOf(pos);
+      score += hv;
+      addArea(hv, AREA_BY_RELIDX[relIdx(hapEl)]);
       events.push({
         t: "육합(六合)",
         w: 0.8 + Math.abs(ya.v),
@@ -1381,7 +1609,9 @@ function evaluateLuck(kind, luckP, prof, ctx = {}) {
     if (!g.set.includes(lb)) continue;
     const others = g.set.filter(x => x !== lb);
     if (others.every(o => srcSet.includes(o))) {
-      const r = W_SAMHAP * rateEl(g.el, dayEl, strength);
+      const natalCnt = others.filter(o => natalOnly.some(([, b]) => b === o)).length;
+      const rootMul = natalCnt >= 2 ? 1 : natalCnt === 1 ? 0.7 : 0.5; // v1.9 원국에 뿌리내린 국일수록 무겁다
+      const r = W_SAMHAP * rateF(g.el) * rootMul;
       score += r;
       addArea(r, AREA_BY_RELIDX[relIdx(g.el)]);
       events.push({
@@ -1425,31 +1655,58 @@ function evaluateLuck(kind, luckP, prof, ctx = {}) {
       });
     }
   }
-  const mb = natal.monthP[1];
-  const lEls = [STEM_EL[ls], STEM_EL[BRANCH_MAIN[lb]]];
-  if ([11, 0, 1].includes(mb) && lEls.includes(1)) {
-    score += W_JOHU;
-    addArea(W_JOHU, AREA_REL.조후);
-    events.push({
-      t: "조후(調候)",
-      w: 1,
-      sc: W_JOHU,
-      act: "막혔던 일을 오늘 다시 밀어보세요",
-      basis: `겨울생(월지 ${BRANCHES[mb]}) + ${label}의 火 기운`,
-      d: "추운 계절에 태어난 명식에 따뜻한 火 기운이 들어옵니다. 얼었던 일이 녹듯 막혔던 흐름에 숨통이 트이는 보너스 운입니다."
-    });
+  /* v1.9 방합(方合) — 같은 계절 세 글자(寅卯辰 등)가 원국·운에 모두 있을 때. 삼합과 같이 국(局)으로 본다 */
+  if (fine && !events.some(e => e.conv)) {
+    for (const g of BANGHAP_GROUPS) {
+      if (!g.set.includes(lb)) continue;
+      const others = g.set.filter(x => x !== lb);
+      if (!others.every(o => srcSet.includes(o))) continue;
+      const natalCnt = others.filter(o => natalOnly.some(([, b]) => b === o)).length;
+      const r = W_BANGHAP * favor(g.el) * (natalCnt >= 2 ? 1 : natalCnt === 1 ? 0.7 : 0.5);
+      score += r;
+      addArea(r, AREA_BY_RELIDX[relIdx(g.el)]);
+      events.push({
+        t: `방합 ${g.name}→${SIPSEONG_GROUP[relIdx(g.el)]}`,
+        w: 1.1,
+        sc: r,
+        el: g.el,
+        conv: SIPSEONG_GROUP[relIdx(g.el)],
+        parts: others.map(o => ((sources.find(([, b]) => b === o) || ["?"])[0]) + " " + BRANCHES[o]),
+        act: r > 0 ? "한 계절의 기운이 통째로 실립니다 — 그 영역을 크게 그려도 됩니다" : r < 0 ? "한 계절의 기운이 통째로 밀려옵니다 — 휩쓸리지 않게 한도를 정하세요" : "계절의 기운이 한쪽으로 모입니다 — 흐름을 타되 출구를 두세요",
+        basis: others.map(o => `${(sources.find(([, b]) => b === o) || ["?"])[0]} ${BRANCHES[o]}`).join(" + ") + ` + ${label} ${BRANCHES[lb]}`,
+        d: `${g.name}이 완성되어 ${EL_HANJA[g.el]}(${SIPSEONG_GROUP[relIdx(g.el)]}) 기운이 계절 전체의 힘으로 일어납니다. ` + (r > 0 ? "나를 돕는 쪽이라 등에 업는 세력입니다." : r < 0 ? "나에게는 부담 쪽이라 휩쓸리기 쉽습니다." : "득실은 중립이니 흐름만 타면 됩니다.")
+      });
+    }
   }
-  if ([5, 6, 7].includes(mb) && lEls.includes(4)) {
-    score += W_JOHU;
-    addArea(W_JOHU, AREA_REL.조후);
-    events.push({
-      t: "조후(調候)",
-      w: 1,
-      sc: W_JOHU,
-      act: "판단이 맑아지는 날 — 미뤄 둔 결정을 정리하세요",
-      basis: `여름생(월지 ${BRANCHES[mb]}) + ${label}의 水 기운`,
-      d: "더운 계절에 태어난 명식에 시원한 水 기운이 들어옵니다. 과열됐던 페이스가 정리되고 판단이 맑아지는 보너스 운입니다."
-    });
+  const mb = natal.monthP[1];
+  /* v1.9 조후(調候) — 궁통보감 조후용신표: 명식이 계절적으로 필요로 하는 천간이 운의 천간(또는 지지 정기)으로 들어올 때 */
+  {
+    const js = johuStems(prof);
+    const JB = [1, 0.6, 0.35, 0.25, 0.2];
+    const iS = js.indexOf(ls);
+    const iB = js.indexOf(BRANCH_MAIN[lb]);
+    let jv = 0;
+    const hits = [];
+    if (iS >= 0) {
+      jv += W_JOHU * JB[iS];
+      hits.push(`천간 ${STEMS[ls]}(${iS === 0 ? "주" : "보조"}용신)`);
+    }
+    if (iB >= 0) {
+      jv += W_JOHU * JB[iB] * 0.6;
+      hits.push(`지지 ${BRANCHES[lb]}의 ${STEMS[BRANCH_MAIN[lb]]}(${iB === 0 ? "주" : "보조"}용신)`);
+    }
+    if (jv > 0) {
+      score += jv;
+      addArea(jv, AREA_REL.조후);
+      events.push({
+        t: "조후(調候)",
+        w: 0.8 + jv,
+        sc: jv,
+        act: "막혔던 일을 다시 밀어보세요 — 명식이 목말라하던 글자가 들어옵니다",
+        basis: `월지 ${BRANCHES[mb]} 조후용신 ${js.map(x => STEMS[x]).join("·")} ← ${label} ${hits.join(", ")}`,
+        d: `${STEMS[dayStem]} 일간이 ${BRANCHES[mb]}월에 태어나 계절적으로 필요로 하는 글자(조후용신 ${js.map(x => STEMS[x]).join("·")}) 가운데 ${hits.join("과 ")}이 들어옵니다. 한난조습이 고르게 맞춰져 막혔던 흐름에 숨통이 트이는 보너스 운입니다.`
+      });
+    }
   }
   if (voidPair && voidPair.includes(lb)) {
     events.push({
@@ -1576,10 +1833,17 @@ function evaluateLuck(kind, luckP, prof, ctx = {}) {
     if (!isBH && !isYI) continue;
     const relName = (pl[1] + 6) % 12 === lb ? "충" : hyungHit(lb, pl[1]) ? "형" : null;
     if (!relName) continue;
+    // v1.9 양인충·백호충은 감점(형은 절반)
+    const bv = -(isBH ? W_BAEKHO_CHUNG : W_YANGIN_CHUNG) * (relName === "충" ? 1 : 0.5) * wOf(pos.replace("주", "지"));
+    score += bv;
+    addArea(bv, {
+      body: 0.7,
+      doc: 0.3
+    });
     events.push({
       t: isBH ? "백호 발동" : "양인 발동",
-      w: 0.45,
-      sc: 0,
+      w: 0.45 + Math.abs(bv),
+      sc: bv,
       act: isBH ? "오늘은 몸 쓰는 일·운전·연장을 평소의 반 박자 느리게 하세요" : "언성과 속도가 같이 오르기 쉬우니, 한 템포 눌러 가세요",
       basis: `${pos} ${STEMS[pl[0]]}${BRANCHES[pl[1]]}(${isBH ? "백호" : "양인"}) ↔ ${label} ${BRANCHES[lb]} ${relName}`,
       d: isBH ? "원국에 잠들어 있던 급한 기운을 이 운이 건드리는 날입니다. 사고·과로·수술수 같은 몸의 문제로 번지기 쉬우니, 서두르는 일정과 위험한 작업만 오늘은 피하세요." : "원국의 칼날 기운을 이 운이 건드리는 날입니다. 평소보다 승부욕과 언성이 오르기 쉬우니, 결정적인 한마디와 무리한 강행만 삼가면 지나갑니다."
@@ -1628,25 +1892,31 @@ function yongsinMapOf(prof) {
   // ① 억부(주축) — 방향은 기운 쪽(신약/신강), 크기는 억부 뚜렷함(부조율의 치우침)에 비례
   const dir = Math.max(-1, Math.min(1, (0.5 - prof.strengthPct) * STRENGTH_DIR_SLOPE));
   const lean = leanLabel(prof);
+  const frame = frameOf(prof); // v1.9 종격이면 희기 반전
   for (let el = 0; el < 5; el++) {
-    const r = rateEl(el, dayEl, lean);
+    const r = rateEl(el, dayEl, lean, frame);
     if (r !== 0) {
-      score[el] += YS_W_EOKBU * r * Math.abs(dir);
-      from[el].push("억부" + (r > 0 ? "+" : "−"));
+      score[el] += YS_W_EOKBU * r * (frame.type === "정격" ? Math.abs(dir) : 1);
+      from[el].push((frame.type === "정격" ? "억부" : frame.type) + (r > 0 ? "+" : "−"));
     }
   }
-  // ② 조후(주축) — 겨울생: 火 용신·水 부담 / 여름생: 水 용신·火 부담 / 봄가을: 요구 약함
+  // ② 조후(주축) — v1.9 궁통보감 조후용신표: 일간×월지의 조후 천간(앞일수록 주용신)을 오행 점수로. 주용신이 火/水면 반대 온도의 오행은 부담
   const mb = prof.natal.monthP[1];
-  if ([11, 0, 1].includes(mb)) {
-    score[1] += YS_W_JOHU2;
-    from[1].push("조후+");
-    score[4] -= YS_W_JOHU2 * 0.5;
-    from[4].push("조후−");
-  } else if ([5, 6, 7].includes(mb)) {
-    score[4] += YS_W_JOHU2;
-    from[4].push("조후+");
-    score[1] -= YS_W_JOHU2 * 0.5;
-    from[1].push("조후−");
+  const js = johuStems(prof);
+  const JW = [1, 0.6, 0.35, 0.25, 0.2];
+  const jScale = frame.type === "정격" ? 1 : 0.5; // 종격은 조후가 부차적
+  js.forEach((st, i) => {
+    const el = STEM_EL[st];
+    score[el] += YS_W_JOHU2 * JW[i] * jScale;
+    if (!from[el].includes("조후+")) from[el].push("조후+");
+  });
+  if (js.length) {
+    const e1 = STEM_EL[js[0]];
+    if (e1 === 1 || e1 === 4) {
+      const opp = e1 === 1 ? 4 : 1;
+      score[opp] -= YS_W_JOHU2 * 0.5;
+      from[opp].push("조후−");
+    }
   }
   // ③ 격국(보조) — 사길신격(식신·정재·편재·정관·정인)은 격 오행 보호(순용),
   //    사흉신·비겁격(상관·편관·편인·건록·양인)은 격 오행 제어(역용): 극하는 오행에 +
@@ -1740,7 +2010,10 @@ function yongsinMapText(prof) {
     if (Math.abs(m.score[el]) < 0.1) continue;
     parts.push(`${EL_HANJA[el]} ${m.score[el] > 0 ? "+" : ""}${m.score[el].toFixed(2)}(${m.from[el].join("·")})`);
   }
-  return parts.length ? parts.join(" / ") + " · 나머지 중립" : "뚜렷한 급소 없음(중화·중립 명식)";
+  const js = johuStems(prof).map(x => STEMS[x]).join("·");
+  const fr = frameOf(prof);
+  const head = (fr.type !== "정격" ? FRAME_KO[fr.type] + " · " : "") + `조후용신(${BRANCHES[prof.natal.monthP[1]]}월) ${js} · `;
+  return head + (parts.length ? parts.join(" / ") + " · 나머지 중립" : "뚜렷한 급소 없음(중화·중립 명식)");
 }
 function sajuYearOf(y, yearP) {
   // 날짜의 절기년(입춘 기준) 번호
@@ -1833,6 +2106,7 @@ function yearCtxOf(prof, Y) {
   const yIdx = ((Y - 1984) % 60 + 60) % 60;
   const ev = evaluateLuck("year", [yIdx % 10, yIdx % 12], prof, {
     dwP: dwForYear(prof.dw, prof.birthYear, Y),
+    year: Y,
     label: "세운"
   });
   return cachePut(key, ev.score);
@@ -1860,6 +2134,7 @@ function yearDist(prof) {
     const yIdx = ((year - 1984) % 60 + 60) % 60;
     const ev = evaluateLuck("year", [yIdx % 10, yIdx % 12], prof, {
       dwP: dwForYear(prof.dw, prof.birthYear, year),
+      year,
       label: "세운"
     });
     list.push({
@@ -2020,6 +2295,7 @@ function analyzeYear(prof, y, m, d) {
   const dwUsed = dwForYear(prof.dw, prof.birthYear, Y);
   const ev = evaluateLuck("year", p.yearP, prof, {
     dwP: dwUsed,
+    year: Y,
     label: "세운"
   });
   const yd = yearDist(prof);
@@ -3131,7 +3407,7 @@ const OVERLAY_LIB = [{
     work: "밀어붙이는 승부수는 오늘이 아닙니다"
   }
 }, {
-  match: /삼합.*→/,
+  match: /(삼합|방합).*→/,
   neg: {
     money: "커지는 판일수록 상한선을 먼저 정하고 들어가세요",
     work: "여럿이 미는 분위기 속에서 내 몫 계산을 잊지 마세요"
@@ -3695,7 +3971,11 @@ function tagOf(e) {
   if (t.startsWith("자형")) return `${e.pos} ${BRANCHES[e.b]} 자형`;
   if (t.startsWith("형")) return `${e.pos} ${BRANCHES[e.b]} 형`;
   if (t.indexOf("삼형") >= 0) return t;
-  if (t.startsWith("삼합")) return t.split("→")[0].trim();
+  if (t.startsWith("삼합") || t.startsWith("방합")) return t.split("→")[0].trim();
+  if (t.startsWith("세운병림")) return "세운병림";
+  if (t.startsWith("대운 천간")) return t;
+  if (t.startsWith("교운기")) return "교운기";
+  if (t.startsWith("투출")) return `${e.pos} ${e.tg} 투출`;
   if (t.startsWith("반합")) return t.split("→")[0].trim();
   if (t.startsWith("천간합")) return `${e.pos} ${STEMS[e.b]} 천간합`;
   if (t.startsWith("천간충")) return `${e.pos} ${STEMS[e.b]} 천간충`;
@@ -3727,9 +4007,10 @@ function coreEvent(a, prof, seed, kind = "day") {
   } else if (t.startsWith("천극지충")) {
     out = e.pos === "일주" ? "한 해 몇 번 없는 강한 흔들림 — 오늘은 새 일을 벌이지 않는다." : fillP("{P} 쪽 변동이 하루 안에 드러난다 — 확정 통보는 내일.", e.pos);
   } else if (t.startsWith("충")) {
-    const base = LUCK_LAYERS.includes(e.pos) ? pick(CHUNG_LUCK, seed) : pick(CHUNG_BASE, seed);
-    const tail = LUCK_LAYERS.includes(e.pos) ? pick([" — 방향은 유지, 변경은 보류.", " — 계획을 바꾸지 말고 하루만 지켜본다."], seed, 1) : g >= 0.3 ? pick([" — 큰 결정은 오늘 확정하지 않는다.", " — 아픈 자리를 맞는 날, 중요한 결정은 내일."], seed, 1) : g <= -0.3 ? pick([" — 흔들린 뒤 오히려 정리되니 미뤄 둔 정리를 한다.", " — 털어내는 변수다, 바뀌는 것을 받아들인다."], seed, 1) : pick([" — 일정에 여유만 둔다.", " — 확인 연락 한 번이면 지나간다."], seed, 1);
-    out = fillP(base, e.pos) + tail;
+    const luck = LUCK_LAYERS.includes(e.pos);
+    const base = luck ? pick(CHUNG_LUCK, seed) : e.ckind === "고지" ? pick(["{P} 쪽 묵은 일이 열린다", "{P}에 쌓아 둔 것이 움직인다"], seed) : e.ckind === "생지" ? pick(["{P} 쪽에 이동·변동이 생긴다", "{P} 일정이 옮겨지기 쉽다"], seed) : pick(CHUNG_BASE, seed);
+    const tail = luck ? pick([" — 방향은 유지, 변경은 보류.", " — 계획을 바꾸지 말고 하루만 지켜본다."], seed, 1) : e.ckind === "고지" ? pick([" — 창고가 열리는 충, 꺼낼 것과 지킬 것을 가른다.", " — 묵은 돈·물건·감정이 드러나니 정리하면 남는다."], seed, 1) : g >= 0.3 ? pick([" — 큰 결정은 오늘 확정하지 않는다.", " — 아픈 자리를 맞는 날, 중요한 결정은 내일."], seed, 1) : g <= -0.3 ? pick([" — 흔들린 뒤 오히려 정리되니 미뤄 둔 정리를 한다.", " — 털어내는 변수다, 바뀌는 것을 받아들인다."], seed, 1) : pick([" — 일정에 여유만 둔다.", " — 확인 연락 한 번이면 지나간다."], seed, 1);
+    out = fillP(base, e.pos) + tail + (e.tam ? " 합이 붙들어 덜 번진다." : "");
   } else if (t.startsWith("자형")) {
     out = fillP("내 조급함과 자책이 문제를 만든다 — {P} 쪽에서 스스로를 몰아세우지 않는다.", e.pos);
   } else if (t.startsWith("형")) {
@@ -3741,6 +4022,18 @@ function coreEvent(a, prof, seed, kind = "day") {
     }
   } else if (t.startsWith("삼합")) {
     out = e.sc > 0 ? pick(["큰 세력이 붙는 날 — 평소보다 큰 그림을 그려도 된다.", "흐름이 한 방향으로 몰리고 나를 돕는다 — 올라탄다."], seed) : e.sc < 0 ? pick(["분위기에 휩쓸리기 쉬운 날 — 커지는 판에 상한선부터.", "한 방향으로 쏠리는데 내게는 부담 — 출구를 정하고 들어간다."], seed) : "흐름이 한쪽으로 몰린다 — 타되 출구를 정해 둔다.";
+  } else if (t.startsWith("방합")) {
+    out = e.sc > 0 ? pick(["한 계절의 기운이 통째로 실린다 — 그 영역을 크게 그려도 된다.", "계절 전체가 내 편인 때 — 미뤄 둔 큰 일을 꺼낸다."], seed) : e.sc < 0 ? pick(["한 계절의 기운이 통째로 밀려온다 — 휩쓸리지 않게 한도를 정한다.", "계절 전체가 한쪽으로 쏠린다, 내게는 부담 — 작게 간다."], seed) : "계절의 기운이 한쪽으로 모인다 — 흐름을 타되 출구를 둔다.";
+  } else if (t.startsWith("세운병림")) {
+    out = "10년 흐름의 주제가 올해 한꺼번에 드러난다 — 변화의 해, 큰 결정은 분산한다.";
+  } else if (t.startsWith("대운 천간충")) {
+    out = "10년의 큰 방향과 올해가 부딪친다 — 큰 방향은 유지, 세부만 조정한다.";
+  } else if (t.startsWith("대운 천간합")) {
+    out = "큰 흐름과 올해가 한 방향으로 묶인다 — 안정되지만 묶인 쪽 일은 더디다.";
+  } else if (t.startsWith("교운기")) {
+    out = "대운이 바뀌는 길목 — 사는 곳·하는 일·곁의 사람이 바뀐다, 큰 결정은 자리 잡은 뒤로.";
+  } else if (t.startsWith("투출")) {
+    out = fillP(`{P}에 숨어 있던 ${TG_AREA[e.tg]} 쪽 사안이 겉으로 드러난다 — 미리 정리해 둔다.`, e.pos);
   } else if (t.startsWith("반합")) {
     const area = GROUP_PLAIN[((e.el - STEM_EL[prof.dayStem]) % 5 + 5) % 5];
     out = e.sc > 0.1 ? pick([`${area} 쪽에 힘이 모인다 — 그쪽 일을 한 걸음 민다.`, `${area} 쪽이 순풍 — 오늘 그 일을 앞에 둔다.`], seed) : e.sc < -0.1 ? pick([`${area} 쪽이 부풀기 쉽다 — 크기를 정하고 움직인다.`, `${area} 쪽으로 쏠린다, 내게는 부담 — 한도를 먼저.`], seed) : `${area} 쪽으로 흐름이 기운다 — 타되 출구를 정한다.`;
@@ -3763,7 +4056,7 @@ function coreEvent(a, prof, seed, kind = "day") {
   } else if (t === "문창귀인") {
     out = pick(["머리로 하는 일이 잘 풀린다 — 글·시험·기획을 앞에 둔다.", "글과 말이 잘 먹히는 날 — 발표·제안서를 오늘 쓴다."], seed);
   } else if (t.startsWith("조후")) {
-    out = [11, 0, 1].includes(prof.natal.monthP[1]) ? pick(["막혔던 흐름에 숨통이 트인다 — 멈춘 일을 다시 민다.", "얼었던 일이 녹는 날 — 막혔던 연락을 다시 한다."], seed) : pick(["과열이 가라앉고 판단이 맑아진다 — 미뤄 둔 결정을 정리한다.", "머리가 식는 날 — 미뤄 둔 판단을 오늘 내린다."], seed);
+    out = pick(["명식이 목말라하던 글자가 들어온다 — 막혔던 일을 다시 민다.", "한난이 맞춰지는 날 — 멈춘 일을 다시 움직인다.", "숨통이 트이는 날 — 미뤄 둔 연락과 결정을 꺼낸다."], seed);
   } else if (t.startsWith("공망")) {
     out = pick(["애쓴 만큼 돌아오지 않는 자리 — 결실보다 기초(공부·정리·관계 회복)에 쓴다.", "결과가 허전하기 쉬운 날 — 성과 대신 바닥을 다진다."], seed);
   } else if (t === "역마살") {
@@ -4459,7 +4752,8 @@ function SajuFortune() {
   const catTxts = analysis && cur ? composeCats(analysis, strength, luckSeed, totalTxt.c, prof, luckKind) : null;
   const coreTxt = analysis && cur && tab >= 1 ? composeLuckCore(luckKind, analysis, prof, luckSeed) : null; // v1.6~1.8 핵심 문장(일·월·년)
   const natal4 = result && prof ? natalAxes(prof, nowYear) : null;
-  const gyeok = result ? gyeokguk(result.natal) : null;
+  const frame = prof ? frameOf(prof) : null;
+  const gyeok = result ? frame && frame.type !== "정격" ? `${frame.type}격 · ${gyeokguk(result.natal)}` : gyeokguk(result.natal) : null; // v1.9 종격 표시
   const dist = result ? elementDist(result.natal) : null;
   const maxDist = dist ? Math.max(...dist) : 1;
   const elMax = dist ? dist.indexOf(Math.max(...dist)) : 0;
@@ -4915,7 +5209,7 @@ if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => { navigator.serviceWorker.register("./sw.js").catch(() => {}); });
 }
 </script>
-<script>/* 껍데기 UI: 재방문(주소 복사)·선택형 탈출 v1.8.0 */
+<script>/* 껍데기 UI: 재방문(주소 복사)·선택형 탈출 v1.9.0 */
 var DISPLAY_URL = "https://bit.ly/myungun"; // 표시·복사용 주소 — 짧은 주소 생기면 여기만 교체
 (function () {
   var ua = window.__forceUA || navigator.userAgent || "";
@@ -5021,7 +5315,7 @@ var DISPLAY_URL = "https://bit.ly/myungun"; // 표시·복사용 주소 — 짧�
 
   if (document.body) build(); else document.addEventListener("DOMContentLoaded", build);
 })();</script>
-<script>/* 부드러운 설치 안내 v1.8.0 */
+<script>/* 부드러운 설치 안내 v1.9.0 */
 (function () {
   var ua = window.__forceUA || navigator.userAgent || "";
   var standalone = (window.matchMedia && matchMedia("(display-mode: standalone)").matches) || window.navigator.standalone === true;
