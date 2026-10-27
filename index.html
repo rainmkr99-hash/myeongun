@@ -5696,6 +5696,10 @@ const css = `
 .sj-calcell.bad.sel{outline-color:#B8352B}
 .sj-calcell:focus-visible{outline:2.5px solid #B8352B;outline-offset:1px}
 .sj-calweek{font-size:12.5px;color:#5C543F;margin:9px 0 0;line-height:1.65}
+.sj-range{font-size:13px;color:#26221C;margin:0 0 11px;line-height:1.6;padding:7px 10px;border-left:3px solid #B8352B;background:#FBF3EE;border-radius:0 6px 6px 0}
+.sj-range b{font-family:'Noto Serif KR',serif}
+.sj-calcell.out{opacity:.4}
+.sj-week .sj-calcell .mx{top:auto;bottom:0}
 .sj-week .sj-calcell{min-height:54px}
 .sj-week .sj-calcell .mx{top:auto;bottom:0}
 .sj-calcell .wd{font-size:9.5px;opacity:.75;line-height:1.25}
@@ -5813,6 +5817,32 @@ function todayStr() {
   return `${n.getFullYear()}-${p(n.getMonth() + 1)}-${p(n.getDate())}`;
 }
 /* v1.17 일운 달력 · v1.18 7일 띠(일운)·월 달력(월운)·열두 달 띠(년운) — 새 규칙·새 문장 없음(기존 일·월운 계산을 색으로 늘어놓은 것) */
+const TERM_KO = ["입춘", "경칩", "청명", "입하", "망종", "소서", "입추", "백로", "한로", "입동", "대설", "소한"];
+const dayBefore = t => {
+  const D = new Date(t.y, t.m - 1, t.d - 1);
+  return {
+    y: D.getFullYear(),
+    m: D.getMonth() + 1,
+    d: D.getDate()
+  };
+};
+/* 월운의 절기 범위: 절입일(한국 시각)부터 다음 절입일 전날까지 */
+function monthRange(Y, mOrd) {
+  const from = termDateOf(Y, mOrd);
+  const to = dayBefore(mOrd === 12 ? termDateOf(Y + 1, 1) : termDateOf(Y, mOrd + 1));
+  return {
+    from,
+    to,
+    term: TERM_KO[mOrd - 1]
+  };
+}
+function yearRange(Y) {
+  return {
+    from: termDateOf(Y, 1),
+    to: dayBefore(termDateOf(Y + 1, 1)),
+    term: "입춘"
+  };
+}
 const CAL_WD = ["일", "월", "화", "수", "목", "금", "토"];
 const calDayStr = (y, m, d) => `${y}-${String(m).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
 function useWeekCells(prof, today) {
@@ -5900,7 +5930,8 @@ function DayCalendar({
   onPick,
   onMonthChange,
   selKey,
-  note
+  note,
+  range
 }) {
   const today = todayStr();
   const [tY, tM] = targetDate.split("-").map(Number);
@@ -5937,6 +5968,8 @@ function DayCalendar({
   const week = useWeekCells(prof, today);
   if (!prof) return null;
   const sel = selKey === undefined ? targetDate : selKey;
+  const rFrom = range ? calDayStr(range.from.y, range.from.m, range.from.d) : null;
+  const rTo = range ? calDayStr(range.to.y, range.to.m, range.to.d) : null;
   const first = new Date(view.y, view.m - 1, 1).getDay();
   const move = k => {
     const D = new Date(view.y, view.m - 1 + k, 1);
@@ -5969,7 +6002,7 @@ function DayCalendar({
   }).map((_, i) => /*#__PURE__*/React.createElement("span", {
     key: "b" + i,
     className: "sj-calblank"
-  })), cells.map(c => calCell(c, `${c.key === sel ? " sel" : ""}${c.key === today ? " today" : ""}${week && week.keys.has(c.key) ? " wk" : ""}`, `${view.m}월 ${c.d}일 ${c.gz}일 ${c.grade.ko}${c.mixed ? " " + c.mixed.kind : ""}`, () => onPick(c.key)))), /*#__PURE__*/React.createElement("p", {
+  })), cells.map(c => calCell(c, `${c.key === sel ? " sel" : ""}${c.key === today ? " today" : ""}${week && week.keys.has(c.key) ? " wk" : ""}${rFrom && (c.key < rFrom || c.key > rTo) ? " out" : ""}`, `${view.m}월 ${c.d}일 ${c.gz}일 ${c.grade.ko}${c.mixed ? " " + c.mixed.kind : ""}`, () => onPick(c.key)))), /*#__PURE__*/React.createElement("p", {
     className: "sj-calweek"
   }, note || "금테두리는 오늘부터 7일, \xB1는 엇갈림\xB7한쪽 무거움. 칸을 누르면 그날 일운으로 갑니다."));
 }
@@ -6547,7 +6580,21 @@ function SajuFortune() {
   }), !isToday && /*#__PURE__*/React.createElement("button", {
     className: "sj-chip",
     onClick: () => setTargetDate(todayStr())
-  }, "\uC624\uB298\uB85C")), tab === 3 && prof && /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(WeekStrip, {
+  }, "\uC624\uB298\uB85C")), tab === 2 && analysis && analysis.mOrd && /*#__PURE__*/React.createElement("p", {
+    className: "sj-range"
+  }, (() => {
+    const r = monthRange(analysis.sajuYear, analysis.mOrd);
+    return [/*#__PURE__*/React.createElement("b", {
+      key: "g"
+    }, STEMS[cur.p.monthP[0]], BRANCHES[cur.p.monthP[1]], "월 운"), ` — ${r.from.m}월 ${r.from.d}일(${r.term})부터 ${r.to.m}월 ${r.to.d}일까지. 양력 달이 아니라 절기로 끊깁니다.`];
+  })()), tab === 1 && analysis && analysis.sajuYear && /*#__PURE__*/React.createElement("p", {
+    className: "sj-range"
+  }, (() => {
+    const r = yearRange(analysis.sajuYear);
+    return [/*#__PURE__*/React.createElement("b", {
+      key: "g"
+    }, STEMS[cur.p.yearP[0]], BRANCHES[cur.p.yearP[1]], "년 운"), ` — ${r.from.y}년 ${r.from.m}월 ${r.from.d}일(입춘)부터 ${r.to.y}년 ${r.to.m}월 ${r.to.d}일까지. 1월과 2월 초는 전해의 운입니다.`];
+  })()), tab === 3 && prof && /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(WeekStrip, {
     prof: prof,
     targetDate: targetDate,
     onPick: setTargetDate
@@ -6564,7 +6611,8 @@ function SajuFortune() {
       setTab(3);
     },
     onMonthChange: (y, m) => setTargetDate(calDayStr(y, m, 15)),
-    note: "이달의 날들 — 칸을 누르면 그날 일운으로 갑니다. ‹ ›로 달을 옮기면 월운도 그 달로 바뀝니다."
+    range: analysis && analysis.mOrd ? monthRange(analysis.sajuYear, analysis.mOrd) : null,
+    note: "흐린 칸은 이 월운 밖(앞달·다음달 절기)의 날입니다. 칸을 누르면 그날 일운으로, ‹ ›로 달을 옮기면 월운도 그 달로 갑니다."
   }), tab === 1 && prof && /*#__PURE__*/React.createElement(YearStrip, {
     prof: prof,
     targetDate: targetDate,
